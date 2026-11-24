@@ -3,7 +3,7 @@
    Fungsi: Menyimpan data di localStorage & menyinkronkan 5 halaman HTML
    ========================================================================== */
 
-var STORAGE_KEY = "temudosen_demo_state_v1";
+var STORAGE_KEY = "temudosen_demo_state_v2";
 
 // Daftar hari untuk tampilan tanggal lengkap & singkat
 var DAFTAR_HARI = {
@@ -30,13 +30,13 @@ function buatDataAwal() {
     },
     notifikasi: [
       {
-        judul: "📌 Pengingat: batas KRS minggu ini",
+        judul: "Pengingat: batas KRS minggu ini",
         isi: "Pastikan telah berkonsultasi sebelum Jumat, 20 Nov 2026.",
         waktu: "1 hari lalu",
         darurat: false
       },
       {
-        judul: "👋 Selamat datang di TemuDosen",
+        judul: "Selamat datang di TemuDosen",
         isi: "Sistem bimbingan akademik DPA kini telah aktif dan siap digunakan.",
         waktu: "2 hari lalu",
         darurat: false
@@ -234,9 +234,9 @@ function renderBeranda(state) {
         "  </div>" +
         '  <div class="ticket-card-bottom">' +
         '    <div class="ticket-datetime mono">' +
-        "      <span>📅 " + formatTanggal(tiket.tanggal, false) + "</span>" +
+        "      <span>" + formatTanggal(tiket.tanggal, false) + "</span>" +
         "      <span>·</span>" +
-        "      <span>⏰ " + tiket.jam + " WIB</span>" +
+        "      <span>" + tiket.jam + " WIB</span>" +
         "    </div>" +
         '    <a href="tiket.html" class="btn btn-outline-secondary">Lihat Tiket Saya →</a>' +
         "  </div>" +
@@ -459,7 +459,7 @@ function initCariJadwal() {
 
       // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
       state.notifikasi.unshift({
-        judul: "✅ Reservasi berhasil (" + kodeBaru + ")",
+        judul: "Reservasi berhasil (" + kodeBaru + ")",
         isi: "Sesi " + slotTerpilih.tipe + " pada " + formatTanggal(slotTerpilih.tanggal, true) + " pukul " + slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB telah terkonfirmasi.",
         waktu: "Baru saja",
         darurat: false
@@ -497,8 +497,8 @@ function initTiket() {
     elType.textContent = tiket.tipe;
     elType.className = "badge " + (tiket.tipe.indexOf("Skripsi") !== -1 ? "badge-skripsi" : "badge-info");
   }
-  if (elDate) elDate.textContent = "📅 " + formatTanggal(tiket.tanggal, true);
-  if (elTime) elTime.textContent = "⏰ " + tiket.jam + " WIB";
+  if (elDate) elDate.textContent = formatTanggal(tiket.tanggal, true);
+  if (elTime) elTime.textContent = tiket.jam + " WIB";
 
   // Sesuaikan badge status, 3-Step Stepper, dan kotak catatan berdasarkan status tiket
   if (tiket.status === "selesai") {
@@ -513,7 +513,7 @@ function initTiket() {
         '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Selesai</div></div>';
     }
     if (elNote) {
-      elNote.innerHTML = "✅ Sesi bimbingan dengan kode <span class='mono'>" + tiket.kode + "</span> telah diverifikasi selesai oleh Dr. Arif Wicaksono.";
+      elNote.innerHTML = "Sesi bimbingan dengan kode <span class='mono'>" + tiket.kode + "</span> telah diverifikasi selesai oleh Dr. Arif Wicaksono.";
     }
   } else if (tiket.status === "dibatalkan") {
     if (elStatus) {
@@ -529,7 +529,7 @@ function initTiket() {
     if (elNote) {
       elNote.style.backgroundColor = "#FEF2F2";
       elNote.style.borderColor = "#FCA5A5";
-      elNote.innerHTML = "⚠️ Sesi dengan kode <span class='mono'>" + tiket.kode + "</span> dibatalkan oleh dosen karena halangan mendadak. Silakan pesan sesi baru.";
+      elNote.innerHTML = "Sesi dengan kode <span class='mono'>" + tiket.kode + "</span> dibatalkan oleh dosen karena halangan mendadak. Silakan pesan sesi baru.";
     }
   } else {
     if (elStatus) {
@@ -537,7 +537,7 @@ function initTiket() {
       elStatus.textContent = "✓ Terkonfirmasi";
     }
     if (elNote) {
-      elNote.innerHTML = "ℹ️ Tunjukkan kode <span class='mono'>" + tiket.kode + "</span> kepada Dr. Arif Wicaksono saat tiba di ruang bimbingan.";
+      elNote.innerHTML = "Tunjukkan kode <span class='mono'>" + tiket.kode + "</span> kepada Dr. Arif Wicaksono saat tiba di ruang bimbingan.";
     }
   }
 }
@@ -823,7 +823,7 @@ function initAgenda() {
         '      <div class="agenda-meta mono">' +
         "        <span>NIM: " + item.nim + "</span>" +
         "        <span>·</span>" +
-        "        <span>⏰ " + item.jam + "</span>" +
+        "        <span>" + item.jam + "</span>" +
         "        <span>·</span>" +
         "        <span>" + item.tipe + "</span>" +
         "      </div>" +
@@ -848,7 +848,7 @@ function initAgenda() {
             if (state.agenda[idx].nim === "24060124120001" && state.tiketAktif) {
               state.tiketAktif.status = "selesai";
               state.notifikasi.unshift({
-                judul: "✅ Sesi bimbingan selesai",
+                judul: "Sesi bimbingan selesai",
                 isi: "Dr. Arif Wicaksono telah menandai sesi bimbingan Anda selesai.",
                 waktu: "Baru saja",
                 darurat: false
@@ -919,7 +919,7 @@ function initAgenda() {
           state.tiketAktif.status = "dibatalkan";
         }
         state.notifikasi.unshift({
-          judul: "🚨 Pembatalan Darurat oleh DPA",
+          judul: "Pembatalan Darurat oleh DPA",
           isi: "Dr. Arif Wicaksono membatalkan seluruh sesi aktif hari ini (Senin, 16 Nov 2026) karena berhalangan hadir mendadak. Silakan pilih jadwal lain.",
           waktu: "Baru saja",
           darurat: true
