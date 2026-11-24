@@ -1,11 +1,5 @@
-/* ==========================================================================
-   TemuDosen — JavaScript Dasar Pemula (Client-Side Prototype)
-   Fungsi: Menyimpan data di localStorage & menyinkronkan 5 halaman HTML
-   ========================================================================== */
-
 var STORAGE_KEY = "temudosen_demo_state_v3";
 
-// Daftar hari untuk tampilan tanggal lengkap & singkat
 var DAFTAR_HARI = {
   "2026-11-16": { panjang: "Senin, 16 November 2026", singkat: "Senin, 16 Nov 2026" },
   "2026-11-17": { panjang: "Selasa, 17 November 2026", singkat: "Selasa, 17 Nov 2026" },
@@ -14,9 +8,6 @@ var DAFTAR_HARI = {
   "2026-11-20": { panjang: "Jumat, 20 November 2026", singkat: "Jumat, 20 Nov 2026" }
 };
 
-// ==========================================================================
-// 1. DATA AWAL (DUMMY) & FUNGSI HELPER LOCALSTORAGE
-// ==========================================================================
 function buatDataAwal() {
   return {
     tiketAktif: {
@@ -26,7 +17,7 @@ function buatDataAwal() {
       tanggal: "2026-11-16",
       jam: "13.00 - 14.00",
       tipe: "Cepat (KRS)",
-      status: "terkonfirmasi" // terkonfirmasi | selesai | dibatalkan
+      status: "terkonfirmasi"
     },
     notifikasi: [
       {
@@ -43,32 +34,26 @@ function buatDataAwal() {
       }
     ],
     slots: [
-      // Senin, 16 Nov 2026 (Slot Terjadwal Hari Ini — sesuai Layar 4)
       { id: "s1", tanggal: "2026-11-16", jamMulai: "09.00", jamSelesai: "10.00", tipe: "Cepat (KRS)", terisi: 2, kuota: 5 },
       { id: "s2", tanggal: "2026-11-16", jamMulai: "10.00", jamSelesai: "11.00", tipe: "Cepat (KRS)", terisi: 4, kuota: 5 },
       { id: "s3", tanggal: "2026-11-16", jamMulai: "14.00", jamSelesai: "15.00", tipe: "Lama (Skripsi)", terisi: 1, kuota: 2 },
 
-      // Selasa, 17 Nov 2026 (Default aktif di Layar 2 — sesuai Hi-Fi)
       { id: "s4", tanggal: "2026-11-17", jamMulai: "09.00", jamSelesai: "10.00", tipe: "Cepat (KRS)", terisi: 2, kuota: 5 },
       { id: "s5", tanggal: "2026-11-17", jamMulai: "10.00", jamSelesai: "11.00", tipe: "Cepat (KRS)", terisi: 4, kuota: 5 },
       { id: "s6", tanggal: "2026-11-17", jamMulai: "11.00", jamSelesai: "12.00", tipe: "Cepat (KRS)", terisi: 5, kuota: 5 },
       { id: "s7", tanggal: "2026-11-17", jamMulai: "13.00", jamSelesai: "14.00", tipe: "Cepat (KRS)", terisi: 0, kuota: 5 },
       { id: "s8", tanggal: "2026-11-17", jamMulai: "14.00", jamSelesai: "15.00", tipe: "Lama (Skripsi)", terisi: 1, kuota: 2 },
 
-      // Rabu, 18 Nov 2026
       { id: "s9", tanggal: "2026-11-18", jamMulai: "09.00", jamSelesai: "10.00", tipe: "Cepat (KRS)", terisi: 1, kuota: 5 },
       { id: "s10", tanggal: "2026-11-18", jamMulai: "13.00", jamSelesai: "14.00", tipe: "Lama (Skripsi)", terisi: 0, kuota: 2 },
 
-      // Kamis, 19 Nov 2026
       { id: "s11", tanggal: "2026-11-19", jamMulai: "10.00", jamSelesai: "11.00", tipe: "Cepat (KRS)", terisi: 3, kuota: 5 },
       { id: "s12", tanggal: "2026-11-19", jamMulai: "14.00", jamSelesai: "15.00", tipe: "Lama (Skripsi)", terisi: 2, kuota: 2 },
 
-      // Jumat, 20 Nov 2026
       { id: "s13", tanggal: "2026-11-20", jamMulai: "08.00", jamSelesai: "09.00", tipe: "Cepat (KRS)", terisi: 2, kuota: 5 },
       { id: "s14", tanggal: "2026-11-20", jamMulai: "09.00", jamSelesai: "10.00", tipe: "Lama (Skripsi)", terisi: 1, kuota: 3 }
     ],
     agenda: [
-      // Senin, 16 Nov 2026
       {
         id: "a1",
         tanggal: "2026-11-16",
@@ -114,7 +99,6 @@ function buatDataAwal() {
         sorot: false
       },
 
-      // Selasa, 17 Nov 2026
       {
         id: "a5",
         tanggal: "2026-11-17",
@@ -149,7 +133,6 @@ function buatDataAwal() {
         sorot: false
       },
 
-      // Rabu, 18 Nov 2026
       {
         id: "a8",
         tanggal: "2026-11-18",
@@ -162,7 +145,6 @@ function buatDataAwal() {
         sorot: false
       },
 
-      // Kamis, 19 Nov 2026
       {
         id: "a9",
         tanggal: "2026-11-19",
@@ -186,7 +168,6 @@ function buatDataAwal() {
         sorot: false
       },
 
-      // Jumat, 20 Nov 2026
       {
         id: "a11",
         tanggal: "2026-11-20",
@@ -228,7 +209,6 @@ function resetDataDemo() {
   return awal;
 }
 
-// Helper menampilkan pesan toast singkat di pojok kanan bawah
 var timerToast = null;
 function tampilkanToast(pesan) {
   var el = document.getElementById("toast");
@@ -242,14 +222,12 @@ function tampilkanToast(pesan) {
   }, 3000);
 }
 
-// Helper format label tanggal dari kode YYYY-MM-DD
 function formatTanggal(kodeTanggal, singkat) {
   var info = DAFTAR_HARI[kodeTanggal];
   if (!info) return kodeTanggal;
   return singkat ? info.singkat : info.panjang;
 }
 
-// Helper membuat kode tiket acak, contoh: TD-4M8P2K
 function buatKodeTiket() {
   var karakter = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   var hasil = "TD-";
@@ -260,7 +238,6 @@ function buatKodeTiket() {
   return hasil;
 }
 
-// Helper mengubah "09.00" atau "09:00" menjadi total menit (540) untuk validasi
 function keMenit(teksJam) {
   var bersih = teksJam.trim().replace(":", ".");
   var cocok = /^([01]\d|2[0-3])\.([0-5]\d)$/.exec(bersih);
@@ -270,9 +247,6 @@ function keMenit(teksJam) {
   return jam * 60 + menit;
 }
 
-// ==========================================================================
-// 2. LOGIKA LAYAR 1 — BERANDA MAHASISWA (index.html)
-// ==========================================================================
 function initBeranda() {
   var state = ambilState();
   renderBeranda(state);
@@ -291,7 +265,6 @@ function renderBeranda(state) {
   var containerTiket = document.getElementById("berandaTicketContainer");
   var notifList = document.getElementById("notifList");
 
-  // Render kartu tiket aktif di dalam hero box
   if (containerTiket) {
     var tiket = state.tiketAktif;
     if (!tiket) {
@@ -335,7 +308,6 @@ function renderBeranda(state) {
     }
   }
 
-  // Render daftar riwayat notifikasi di panel kanan
   if (notifList) {
     var htmlNotif = "";
     for (var i = 0; i < state.notifikasi.length; i++) {
@@ -352,14 +324,11 @@ function renderBeranda(state) {
   }
 }
 
-// ==========================================================================
-// 3. LOGIKA LAYAR 2 — CARI JADWAL (cari-jadwal.html)
-// ==========================================================================
 function initCariJadwal() {
   var state = ambilState();
-  var hariDipilih = "2026-11-17"; // Default Selasa, 17 Nov 2026 (sesuai Hi-Fi)
+  var hariDipilih = "2026-11-17";
   var tipeDipilih = "Cepat (KRS)";
-  var idSlotDipilih = "s5"; // Default 10.00 - 11.00 (sesuai Hi-Fi)
+  var idSlotDipilih = "s5";
 
   var tombolHari = document.querySelectorAll("#daySelector .day-chip");
   var tombolTipe = document.querySelectorAll(".segmented-control .segmented-btn");
@@ -377,17 +346,14 @@ function initCariJadwal() {
       heading.textContent = "Slot Tersedia (" + formatTanggal(hariDipilih, true) + ")";
     }
 
-    // Filter slot sesuai hari & tipe yang dipilih
     var daftarSlot = state.slots.filter(function (s) {
       return s.tanggal === hariDipilih && s.tipe === tipeDipilih;
     });
 
-    // Urutkan slot dari jam paling pagi ke paling sore
     daftarSlot.sort(function (a, b) {
       return keMenit(a.jamMulai) - keMenit(b.jamMulai);
     });
 
-    // Cek apakah slot yang dipilih masih ada di daftar & tidak penuh
     var slotAktif = null;
     for (var i = 0; i < daftarSlot.length; i++) {
       if (daftarSlot[i].id === idSlotDipilih && daftarSlot[i].terisi < daftarSlot[i].kuota) {
@@ -396,7 +362,6 @@ function initCariJadwal() {
       }
     }
 
-    // Jika belum ada yang dipilih, pilih otomatis slot pertama yang masih tersedia
     if (!slotAktif) {
       for (var j = 0; j < daftarSlot.length; j++) {
         if (daftarSlot[j].terisi < daftarSlot[j].kuota) {
@@ -407,7 +372,6 @@ function initCariJadwal() {
       }
     }
 
-    // Render daftar kartu slot
     if (slotList) {
       if (daftarSlot.length === 0) {
         slotList.innerHTML =
@@ -435,7 +399,6 @@ function initCariJadwal() {
             badgeHtml = '<span class="badge badge-success">✓ Tersedia · sisa ' + sisa + "</span>";
           }
 
-          // Buat titik indikator kuota (quota dots)
           var dotsHtml = "";
           for (var d = 0; d < s.kuota; d++) {
             dotsHtml += '<span class="quota-dot' + (d < s.terisi ? " is-filled" : "") + '"></span>';
@@ -452,7 +415,6 @@ function initCariJadwal() {
         }
         slotList.innerHTML = html;
 
-        // Tambahkan event klik ke setiap kartu slot yang bisa dipilih
         var semuaKartu = slotList.querySelectorAll(".slot-card:not(:disabled)");
         for (var c = 0; c < semuaKartu.length; c++) {
           semuaKartu[c].addEventListener("click", function () {
@@ -463,11 +425,9 @@ function initCariJadwal() {
       }
     }
 
-    // Perbarui Panel Kanan (Ringkasan Pilihan)
     if (summaryDate) summaryDate.textContent = formatTanggal(hariDipilih, false);
     if (summaryType) summaryType.textContent = tipeDipilih;
 
-    // Cek apakah mahasiswa mencoba memesan jadwal yang persis sama dengan tiket aktif
     var sudahPesanSlotSama = false;
     if (slotAktif && state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
       var jamSlot = slotAktif.jamMulai + " - " + slotAktif.jamSelesai;
@@ -496,7 +456,6 @@ function initCariJadwal() {
     }
   }
 
-  // Event klik pada Day Chips
   for (var i = 0; i < tombolHari.length; i++) {
     tombolHari[i].addEventListener("click", function () {
       if (this.disabled) return;
@@ -510,7 +469,6 @@ function initCariJadwal() {
     });
   }
 
-  // Event klik pada Segmented Control (Cepat KRS vs Lama Skripsi)
   for (var t = 0; t < tombolTipe.length; t++) {
     tombolTipe[t].addEventListener("click", function () {
       for (var j = 0; j < tombolTipe.length; j++) {
@@ -523,7 +481,6 @@ function initCariJadwal() {
     });
   }
 
-  // Elemen Modal Konfirmasi Ganti Jadwal (Reschedule)
   var rescheduleModal = document.getElementById("rescheduleModal");
   var rescheduleConsequence = document.getElementById("rescheduleConsequence");
   var btnCloseReschedule = document.getElementById("btnCloseRescheduleModal");
@@ -565,13 +522,11 @@ function initCariJadwal() {
   }
 
   function eksekusiBooking(slotTerpilih, isReschedule) {
-    // Efek loading singkat sebelum pindah halaman
     if (btnKonfirmasi) {
       btnKonfirmasi.classList.add("is-loading");
       btnKonfirmasi.textContent = isReschedule ? "Mengganti Jadwal..." : "Memproses Booking...";
     }
 
-    // Jika sebelumnya sudah ada tiket aktif, kembalikan kuota slot sebelumnya
     if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
       for (var oldS = 0; oldS < state.slots.length; oldS++) {
         var oSlot = state.slots[oldS];
@@ -583,7 +538,6 @@ function initCariJadwal() {
       }
     }
 
-    // Tambah jumlah terisi pada slot baru
     slotTerpilih.terisi += 1;
 
     var kodeBaru = buatKodeTiket();
@@ -598,10 +552,8 @@ function initCariJadwal() {
       status: "terkonfirmasi"
     };
 
-    // Sinkronkan ke antrean agenda dosen sesuai tanggal yang dipilih mahasiswa
     var agendaBaru = [];
     for (var ag = 0; ag < state.agenda.length; ag++) {
-      // Hapus entri aktif lama milik Lungga Elyas agar berpindah ke hari baru yang dipesan
       if (state.agenda[ag].nim === "24060124120001" && state.agenda[ag].status === "aktif") {
         continue;
       }
@@ -620,7 +572,6 @@ function initCariJadwal() {
     });
     state.agenda = agendaBaru;
 
-    // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
     state.notifikasi.unshift({
       judul: (isReschedule ? "Jadwal diganti (" : "Reservasi berhasil (") + kodeBaru + ")",
       isi: "Sesi " + slotTerpilih.tipe + " pada " + formatTanggal(slotTerpilih.tanggal, true) + " pukul " + jamBaru + " WIB telah terkonfirmasi.",
@@ -655,7 +606,6 @@ function initCariJadwal() {
     });
   }
 
-  // Event klik Tombol Konfirmasi Booking -> jika masih ada tiket aktif, tampilkan pop-up konfirmasi dulu
   if (btnKonfirmasi) {
     btnKonfirmasi.addEventListener("click", function () {
       var slotTerpilih = null;
@@ -667,7 +617,6 @@ function initCariJadwal() {
       }
       if (!slotTerpilih || slotTerpilih.terisi >= slotTerpilih.kuota) return;
 
-      // Jika masih ada tiket aktif, minta konfirmasi ganti jadwal (Reschedule)
       if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
         bukaModalReschedule(slotTerpilih);
         return;
@@ -680,9 +629,6 @@ function initCariJadwal() {
   renderSlotDanRingkasan();
 }
 
-// ==========================================================================
-// 4. LOGIKA LAYAR 3 — TIKET / RESI SAYA (tiket.html)
-// ==========================================================================
 function initTiket() {
   var state = ambilState();
   var tiket = state.tiketAktif;
@@ -713,7 +659,6 @@ function initTiket() {
     if (elDate) elDate.textContent = formatTanggal(t.tanggal, true);
     if (elTime) elTime.textContent = t.jam + " WIB";
 
-    // Sesuaikan badge status, 3-Step Stepper, tombol batal, dan catatan
     if (t.status === "selesai") {
       if (elStatus) {
         elStatus.className = "badge badge-success";
@@ -805,7 +750,6 @@ function initTiket() {
       t.status = "dibatalkan";
       t.darurat = false;
 
-      // Kembalikan jumlah terisi pada slot terkait
       for (var s = 0; s < state.slots.length; s++) {
         var slot = state.slots[s];
         var slotJam = slot.jamMulai + " - " + slot.jamSelesai;
@@ -817,7 +761,6 @@ function initTiket() {
         }
       }
 
-      // Sinkronisasi status di agenda dosen jika mahasiswa ini ada di agenda pada tanggal tersebut
       for (var a = 0; a < state.agenda.length; a++) {
         if (
           state.agenda[a].nim === "24060124120001" &&
@@ -828,7 +771,6 @@ function initTiket() {
         }
       }
 
-      // Tambahkan notifikasi pembatalan ke beranda
       state.notifikasi.unshift({
         judul: "Reservasi dibatalkan (" + t.kode + ")",
         isi: "Anda telah membatalkan sesi konsultasi pada " + formatTanggal(t.tanggal, true) + " pukul " + t.jam + " WIB.",
@@ -846,9 +788,6 @@ function initTiket() {
   renderTiketView();
 }
 
-// ==========================================================================
-// 5. LOGIKA LAYAR 4 — ATUR JADWAL DOSEN (atur-jadwal.html)
-// ==========================================================================
 function initAturJadwal() {
   var state = ambilState();
   var kuota = 3;
@@ -879,7 +818,6 @@ function initAturJadwal() {
       return s.tanggal === tanggalAktif;
     });
 
-    // Urutkan berdasarkan jam mulai
     slotHariIni.sort(function (a, b) {
       return keMenit(a.jamMulai) - keMenit(b.jamMulai);
     });
@@ -913,7 +851,6 @@ function initAturJadwal() {
     }
     list.innerHTML = html;
 
-    // Event hapus slot terjadwal
     var deleteBtns = list.querySelectorAll(".btn-delete-slot");
     for (var d = 0; d < deleteBtns.length; d++) {
       deleteBtns[d].addEventListener("click", function () {
@@ -964,7 +901,6 @@ function initAturJadwal() {
     if (btnPlus) btnPlus.disabled = kuota >= 10;
   }
 
-  // Event stepper kuota 1 - 10
   if (btnMinus) {
     btnMinus.addEventListener("click", function () {
       if (kuota > 1) {
@@ -982,7 +918,6 @@ function initAturJadwal() {
     });
   }
 
-  // Event ganti tipe sesi (Cepat KRS vs Lama Skripsi)
   for (var i = 0; i < tombolTipe.length; i++) {
     tombolTipe[i].addEventListener("click", function () {
       for (var j = 0; j < tombolTipe.length; j++) {
@@ -993,7 +928,6 @@ function initAturJadwal() {
     });
   }
 
-  // Event ganti tanggal di dropdown -> refresh daftar slot panel kanan
   if (selectTanggal) {
     selectTanggal.addEventListener("change", function () {
       tampilkanError("");
@@ -1001,7 +935,6 @@ function initAturJadwal() {
     });
   }
 
-  // Event submit formulir tambah slot baru
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -1028,7 +961,6 @@ function initAturJadwal() {
         return;
       }
 
-      // Cek bentrok waktu dengan slot yang sudah ada pada tanggal yang sama
       for (var idx = 0; idx < state.slots.length; idx++) {
         var s = state.slots[idx];
         if (s.tanggal !== tanggal) continue;
@@ -1040,7 +972,6 @@ function initAturJadwal() {
         }
       }
 
-      // Simpan slot baru ke state & localStorage
       var slotBaru = {
         id: "s" + Date.now(),
         tanggal: tanggal,
@@ -1063,12 +994,9 @@ function initAturJadwal() {
   renderSlotTerjadwal();
 }
 
-// ==========================================================================
-// 6. LOGIKA LAYAR 5 — AGENDA & MODE DARURAT DOSEN (agenda.html)
-// ==========================================================================
 function initAgenda() {
   var state = ambilState();
-  var tanggalDipilih = "2026-11-16"; // Default Senin, 16 Nov 2026 (Hari Ini)
+  var tanggalDipilih = "2026-11-16";
 
   var tombolHari = document.querySelectorAll("#agendaDaySelector .day-chip");
   var modal = document.getElementById("emergencyModal");
@@ -1082,7 +1010,6 @@ function initAgenda() {
     var daftar = state.agenda.filter(function (item) {
       return item.tanggal === tanggalDipilih;
     });
-    // Urutkan antrean dari jam paling pagi ke paling sore
     daftar.sort(function (a, b) {
       var jamA = a.jam.split("-")[0].trim();
       var jamB = b.jam.split("-")[0].trim();
@@ -1221,7 +1148,6 @@ function initAgenda() {
 
     list.innerHTML = html;
 
-    // Event klik tombol "Selesaikan Sesi" pada tiap kartu mahasiswa
     var semuaBtnSelesai = list.querySelectorAll(".btn-selesai-sesi");
     for (var b = 0; b < semuaBtnSelesai.length; b++) {
       semuaBtnSelesai[b].addEventListener("click", function () {
@@ -1231,7 +1157,6 @@ function initAgenda() {
             var targetItem = state.agenda[idx];
             targetItem.status = "selesai";
 
-            // Kembalikan 1 kuota pada slot jadwal yang sesuai agar kuota terbuka
             var jamBersih = targetItem.jam.replace(" WIB", "").trim();
             for (var s = 0; s < state.slots.length; s++) {
               var sl = state.slots[s];
@@ -1242,7 +1167,6 @@ function initAgenda() {
               }
             }
 
-            // Sinkronisasi ke tiket mahasiswa hanya jika tanggal tiketnya cocok
             if (
               targetItem.nim === "24060124120001" &&
               state.tiketAktif &&
@@ -1267,7 +1191,6 @@ function initAgenda() {
     }
   }
 
-  // Event klik pilihan hari di Agenda Dosen
   for (var h = 0; h < tombolHari.length; h++) {
     tombolHari[h].addEventListener("click", function () {
       for (var j = 0; j < tombolHari.length; j++) {
@@ -1303,21 +1226,18 @@ function initAgenda() {
     btnCancelModal.addEventListener("click", tutupModal);
   }
 
-  // Tutup modal saat klik area gelap di luar dialog
   if (modal) {
     modal.addEventListener("click", function (e) {
       if (e.target === modal) tutupModal();
     });
   }
 
-  // Easy Exit: tutup modal dengan tombol Escape
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && modal && modal.classList.contains("is-open")) {
       tutupModal();
     }
   });
 
-  // Konfirmasi pembatalan darurat hanya untuk sesi aktif pada tanggal yang dipilih
   if (btnConfirmEmergency) {
     btnConfirmEmergency.addEventListener("click", function () {
       var jumlahDibatalkan = 0;
@@ -1330,7 +1250,6 @@ function initAgenda() {
       }
 
       if (jumlahDibatalkan > 0) {
-        // Hanya batalkan tiket mahasiswa jika tanggal tiketnya sama dengan tanggal darurat
         if (
           state.tiketAktif &&
           state.tiketAktif.status === "terkonfirmasi" &&
@@ -1354,7 +1273,6 @@ function initAgenda() {
     });
   }
 
-  // Tombol pulihkan data demo agar mudah diuji ulang
   if (btnRestoreDemo) {
     btnRestoreDemo.addEventListener("click", function () {
       state = resetDataDemo();
@@ -1366,9 +1284,6 @@ function initAgenda() {
   renderAgenda();
 }
 
-// ==========================================================================
-// 7. INISIALISASI HALAMAN (DOMContentLoaded)
-// ==========================================================================
 document.addEventListener("DOMContentLoaded", function () {
   var halaman = document.body.getAttribute("data-page");
 

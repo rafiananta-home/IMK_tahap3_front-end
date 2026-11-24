@@ -5,20 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TemuDosen — Beranda Mahasiswa</title>
-  <!-- Google Fonts: Manrope & IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <!-- Bootstrap 5 CSS untuk membantu styling tombol dan utilitas -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Stylesheet Utama TemuDosen -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body data-page="beranda">
-  <!-- ==================== TOP NAVBAR ==================== -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="index.html" class="brand">
@@ -26,7 +22,6 @@
         <span class="brand-badge">PROTOTIPE</span>
       </a>
 
-      <!-- Pengalih Mode Demo antar Halaman Mahasiswa & Dosen -->
       <div class="mode-switcher" aria-label="Pengalih Mode Demo">
         <span class="mode-switcher-label">Mode demo:</span>
         <a href="index.html" class="btn btn-sm mode-btn is-active" aria-current="page">Mhs</a>
@@ -35,11 +30,8 @@
     </div>
   </header>
 
-  <!-- ==================== LAYOUT 3 ZONA ==================== -->
   <div class="app-layout">
-    <!-- ZONA 1: SIDEBAR KIRI MAHASISWA -->
     <nav class="sidebar" aria-label="Menu Navigasi Mahasiswa">
-      <!-- Kartu Profil Mahasiswa -->
       <div class="profile-card">
         <div class="avatar" aria-hidden="true">LE</div>
         <div>
@@ -49,7 +41,6 @@
         </div>
       </div>
 
-      <!-- Daftar Link Menu (<a href>) -->
       <ul class="nav-menu">
         <li>
           <a href="index.html" class="nav-item is-active" aria-current="page">
@@ -68,7 +59,6 @@
         </li>
       </ul>
 
-      <!-- Kotak Informasi Demo -->
       <div class="demo-callout">
         <strong>Demo: Senin, 16 Nov 2026</strong>
         <p>Perubahan status di mode Mahasiswa / Dosen tersinkron otomatis.</p>
@@ -78,14 +68,12 @@
       </div>
     </nav>
 
-    <!-- ZONA 2: KONTEN UTAMA (LAYAR 1 — BERANDA) -->
     <main class="main-content">
       <section>
         <h1 class="page-title">Halo, Lungga Elyas</h1>
         <p class="page-subtitle">Selamat datang di portal bimbingan akademik Anda.</p>
       </section>
 
-      <!-- Hero Box Jadwal Bimbingan -->
       <section class="hero-box" aria-label="Jadwal Bimbingan Aktif">
         <div class="hero-top">
           <div>
@@ -97,7 +85,6 @@
           </a>
         </div>
 
-        <!-- Kartu Tiket Aktif (diisi ulang otomatis oleh js/app.js) -->
         <div id="berandaTicketContainer">
           <div class="hero-ticket-card">
             <div class="ticket-card-top">
@@ -129,7 +116,6 @@
         </div>
       </section>
 
-      <!-- Kartu Profil Dosen Pembimbing Akademik (DPA) -->
       <section class="dpa-card" aria-label="Informasi Dosen Pembimbing Akademik">
         <div class="avatar avatar-lg" aria-hidden="true">AW</div>
         <div>
@@ -140,7 +126,6 @@
       </section>
     </main>
 
-    <!-- ZONA 3: PANEL KANAN (RIWAYAT NOTIFIKASI) -->
     <aside class="aside-panel" aria-label="Riwayat Notifikasi">
       <h2 class="section-title">Riwayat Notifikasi</h2>
 
@@ -160,7 +145,6 @@
     </aside>
   </div>
 
-  <!-- Toast Umpan Balik Ringan -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="js/app.js"></script>

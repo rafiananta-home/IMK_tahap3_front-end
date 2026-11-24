@@ -1,32 +1,22 @@
-/* ==========================================================================
-   TemuDosen — Stylesheet Utama (Hi-Fi Prototype)
-   Acuan: Laporan Tahap 2 Bab 2 (Design System), Bab 3 (Atomic & FSM), Bab 4 (Hi-Fi)
-   ========================================================================== */
-
-/* 1. DESIGN TOKENS (:root) — Proporsi Warna 60-30-10, Spasi 8-Titik, Tipografi */
 :root {
-  /* 60% Surface & Background */
   --color-bg-canvas: #F4FBFC;
   --color-bg-surface: #FFFFFF;
   --color-surface-subtle: #F8FAFC;
   --color-surface-muted: #F1F5F9;
 
-  /* 30% Structural, Border & Text (Lulus WCAG AAA di atas putih/panel) */
   --color-text-primary: #0B2530;
   --color-text-secondary: #4B5563;
   --color-text-muted: #6B7280;
   --color-border: #E2E8F0;
   --color-border-strong: #CBD5E1;
 
-  /* 10% Primary Accent & Highlight */
-  --color-action-primary: #2DD4BF;       /* Teks wajib #0B2530 (CR 8,54:1 AAA) */
+  --color-action-primary: #2DD4BF;
   --color-action-primary-hover: #22BFA9;
-  --color-accent-selected: #0E7490;      /* Teks wajib #FFFFFF (CR 5,36:1 AA) */
+  --color-accent-selected: #0E7490;
   --color-highlight-mint: #CCFBF1;
   --color-highlight-mint-soft: #E6FBF6;
   --color-highlight-cyan-soft: #E0F2FE;
 
-  /* Warna Semantik Status (Lulus WCAG AA + Wajib Dual-Signifier) */
   --color-status-success: #15803D;
   --color-status-success-bg: #DCFCE7;
   --color-status-success-soft: #F0FDF4;
@@ -43,41 +33,45 @@
   --color-category-skripsi-bg: #EDE9FE;
   --color-category-skripsi-text: #5B21B6;
 
-  /* Tipografi */
   --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
-  /* Skala Spasi 8-Titik */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
 
-  /* Radius & Ukuran Kontrol */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-pill: 999px;
   --control-height: 48px;
 
-  /* Transisi Micro-interaction (Ambang Kognitif <= 100ms & 150-300ms) */
   --transition-fast: 100ms ease;
   --transition-base: 200ms ease;
 }
 
-/* 2. RESET & BASE TYPOGRAPHY (Kompatibel dengan Bootstrap 5 CSS) */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6, p, ul, ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
   margin: 0;
 }
 
-ul, ol {
+ul,
+ol {
   padding: 0;
 }
 
@@ -113,22 +107,24 @@ select {
   font-variant-numeric: tabular-nums;
 }
 
-/* Hierarki Tipografi Modular (Bab 2.1) */
-h1, .page-title {
+h1,
+.page-title {
   font-size: 24px;
   font-weight: 700;
   line-height: 32px;
   color: var(--color-text-primary);
 }
 
-h2, .section-title {
+h2,
+.section-title {
   font-size: 18px;
   font-weight: 600;
   line-height: 26px;
   color: var(--color-text-primary);
 }
 
-h3, .card-title {
+h3,
+.card-title {
   font-size: 15px;
   font-weight: 600;
   line-height: 22px;
@@ -157,7 +153,6 @@ h3, .card-title {
   color: var(--color-text-muted);
 }
 
-/* 3. LAYOUT UTAMA (Top Navbar 64px + Grid 3 Zona Desktop 1440px) */
 .topbar {
   position: sticky;
   top: 0;
@@ -249,7 +244,6 @@ h3, .card-title {
   color: var(--color-text-primary);
 }
 
-/* Grid 3 Zona: Sidebar Kiri (~260px) | Konten Utama (Fluid) | Panel Kanan (~320px) */
 .app-layout {
   max-width: 1440px;
   margin: 0 auto;
@@ -290,7 +284,6 @@ h3, .card-title {
   min-height: calc(100vh - 112px);
 }
 
-/* Sidebar: Kartu Profil, Daftar Menu, & Boks Demo */
 .profile-card {
   display: flex;
   align-items: center;
@@ -394,9 +387,6 @@ h3, .card-title {
   line-height: 1.45;
 }
 
-/* 4. KOMPONEN ATOMIC & MOLECULAR */
-
-/* Tombol Dasar — Override Bootstrap .btn agar sesuai warna Hi-Fi TemuDosen */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -539,7 +529,6 @@ h3, .card-title {
   color: var(--color-accent-selected);
 }
 
-/* Badge / Status Pills (Dual-Signifier: Warna + Ikon + Teks) */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -589,7 +578,6 @@ h3, .card-title {
   color: var(--color-category-skripsi-text);
 }
 
-/* Segmented Control 2-Opsi (Hukum Hick: Opsi <= 5) */
 .segmented-control {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -622,7 +610,6 @@ h3, .card-title {
   box-shadow: 0 2px 6px rgba(11, 37, 48, 0.08);
 }
 
-/* 5. 6 STATUS INTERAKSI FSM (Default, Hover, Focus, Active, Disabled, Loading) */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -662,12 +649,11 @@ button:disabled,
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* 6. STYLING KHUSUS PER LAYAR */
-
-/* Header Konten dengan Tombol Kembali (Layar 2 & 3) */
 .page-header-row {
   display: flex;
   align-items: center;
@@ -681,7 +667,6 @@ button:disabled,
   gap: 14px;
 }
 
-/* --- LAYAR 1: DASBOR UTAMA MAHASISWA --- */
 .hero-box {
   background-color: var(--color-highlight-mint);
   border: 1px solid #99F6E4;
@@ -774,7 +759,6 @@ button:disabled,
   margin-bottom: 2px;
 }
 
-/* Panel Kanan: Daftar Notifikasi & Petunjuk */
 .notif-list,
 .guide-list,
 .scheduled-list {
@@ -815,7 +799,6 @@ button:disabled,
   line-height: 1.45;
 }
 
-/* --- LAYAR 2: EKSPLORASI JADWAL --- */
 .day-selector-wrap {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -898,7 +881,6 @@ button:disabled,
   margin-bottom: 6px;
 }
 
-/* Progress Dots Indikator Kapasitas (Hukum Closure & Dual-Signifier) */
 .quota-dots {
   display: flex;
   align-items: center;
@@ -923,7 +905,6 @@ button:disabled,
   border-color: #94A3B8;
 }
 
-/* Panel Kanan Ringkasan Pilihan */
 .summary-list {
   display: flex;
   flex-direction: column;
@@ -958,7 +939,6 @@ button:disabled,
   line-height: 1.45;
 }
 
-/* --- LAYAR 3: RESI & STATUS AKSES (TICKET NOTCH & 3-STEP STEPPER) --- */
 .receipt-card {
   border: 2px solid var(--color-action-primary);
   border-radius: var(--radius-lg);
@@ -977,7 +957,6 @@ button:disabled,
   flex-wrap: wrap;
 }
 
-/* Efek Ticket Notch (Lekukan setengah lingkaran kiri & kanan — Hukum Closure) */
 .receipt-header::before,
 .receipt-header::after {
   content: "";
@@ -1040,7 +1019,6 @@ button:disabled,
   flex-wrap: wrap;
 }
 
-/* Horizontal 3-Step Stepper (Hukum Continuity) */
 .stepper-section {
   display: flex;
   flex-direction: column;
@@ -1136,7 +1114,6 @@ button:disabled,
   flex-wrap: wrap;
 }
 
-/* --- LAYAR 4: MANAJEMEN JADWAL DOSEN --- */
 .form-card {
   border: 1.5px solid #99F6E4;
   border-radius: var(--radius-lg);
@@ -1153,7 +1130,6 @@ button:disabled,
   gap: 6px;
 }
 
-/* Persistent Top-Aligned Label (Bab 3.2) */
 .form-label {
   font-size: 13px;
   font-weight: 700;
@@ -1218,7 +1194,6 @@ button:disabled,
   flex-wrap: wrap;
 }
 
-/* Stepper Counter Kuota (1-10) */
 .stepper-counter {
   display: inline-flex;
   align-items: center;
@@ -1264,7 +1239,6 @@ button:disabled,
   font-weight: 700;
 }
 
-/* Panel Kanan Layar 4: Slot Terjadwal Hari Ini */
 .scheduled-card {
   background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
@@ -1278,8 +1252,15 @@ button:disabled,
 }
 
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scheduled-time {
@@ -1322,7 +1303,6 @@ button:disabled,
   color: var(--color-status-danger);
 }
 
-/* --- LAYAR 5: AGENDA & MODE DARURAT DOSEN --- */
 .day-selector-wrap.day-selector-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
@@ -1377,7 +1357,6 @@ button:disabled,
   margin-top: 3px;
 }
 
-/* Panel Kanan Layar 5: Isolasi Mode Darurat Dosen */
 .aside-panel.is-emergency-zone {
   border: 1.5px solid var(--color-status-danger-border);
 }
@@ -1441,7 +1420,6 @@ button:disabled,
   color: var(--color-status-danger);
 }
 
-/* 7. MODAL DIALOG KONFIRMASI DESTRUKTIF (Figure-Ground & 4 Elemen Wajib) */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1539,7 +1517,6 @@ button:disabled,
   padding-top: var(--space-xs);
 }
 
-/* Toast Umpan Balik Ringan (Visibility of System Status) */
 .toast,
 .toast:not(.show) {
   display: block;
@@ -1575,11 +1552,11 @@ button:disabled,
   font-size: 11px;
 }
 
-/* 8. RESPONSIVE TABLET & MOBILE (< 576px: 4-Column Stack & Bottom Navigation) */
 @media (max-width: 1080px) {
   .app-layout {
     grid-template-columns: 220px minmax(0, 1fr);
   }
+
   .aside-panel {
     grid-column: 1 / -1;
     min-height: auto;
@@ -1612,7 +1589,6 @@ button:disabled,
     padding: var(--space-md);
   }
 
-  /* Sidebar bertransformasi menjadi Bottom Navigation Bar 64px (Bab 2.1) */
   .sidebar {
     position: fixed;
     left: 0;

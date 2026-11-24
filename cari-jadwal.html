@@ -4,17 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TemuDosen — Cari Jadwal</title>
-  <!-- Google Fonts: Manrope & IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Bootstrap 5 CSS untuk membantu styling tombol dan utilitas -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Stylesheet Utama TemuDosen -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="cari-jadwal">
-  <!-- ==================== TOP NAVBAR ==================== -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="index.html" class="brand">
@@ -22,7 +18,6 @@
         <span class="brand-badge">PROTOTIPE</span>
       </a>
 
-      <!-- Pengalih Mode Demo antar Halaman Mahasiswa & Dosen -->
       <div class="mode-switcher" aria-label="Pengalih Mode Demo">
         <span class="mode-switcher-label">Mode demo:</span>
         <a href="index.html" class="btn btn-sm mode-btn is-active" aria-current="page">Mhs</a>
@@ -31,9 +26,7 @@
     </div>
   </header>
 
-  <!-- ==================== LAYOUT 3 ZONA ==================== -->
   <div class="app-layout">
-    <!-- ZONA 1: SIDEBAR KIRI MAHASISWA -->
     <nav class="sidebar" aria-label="Menu Navigasi Mahasiswa">
       <ul class="nav-menu">
         <li>
@@ -54,9 +47,7 @@
       </ul>
     </nav>
 
-    <!-- ZONA 2: KONTEN UTAMA (LAYAR 2 — CARI JADWAL) -->
     <main class="main-content">
-      <!-- Header Halaman + Tombol Kembali -->
       <div class="page-header-row">
         <div class="page-header-left">
           <a href="index.html" class="btn btn-outline-secondary btn-icon-back" aria-label="Kembali ke Beranda">←</a>
@@ -67,7 +58,6 @@
         </div>
       </div>
 
-      <!-- Pemilih Hari Horizontal (Senin - Minggu) -->
       <div id="daySelector" class="day-selector-wrap" role="tablist" aria-label="Pilih Hari Bimbingan">
         <button type="button" class="day-chip" data-day="2026-11-16">Sen · 16 Nov</button>
         <button type="button" class="day-chip is-active" data-day="2026-11-17">Sel · 17 Nov</button>
@@ -78,18 +68,15 @@
         <button type="button" class="day-chip" data-day="2026-11-22" disabled>Min · 22 Nov</button>
       </div>
 
-      <!-- Segmented Control Tipe Bimbingan -->
       <div class="segmented-control" role="tablist" aria-label="Tipe Bimbingan">
         <button type="button" class="segmented-btn is-active" data-type="Cepat (KRS)">Cepat (KRS)</button>
         <button type="button" class="segmented-btn" data-type="Lama (Skripsi)">Lama (Skripsi)</button>
       </div>
 
-      <!-- Daftar Slot Waktu Tersedia -->
       <section aria-label="Daftar Slot Tersedia">
         <h2 id="slotListHeading" class="card-title mb-3">Slot Tersedia (Selasa, 17 Nov 2026)</h2>
 
         <div id="slotList" class="slot-list">
-          <!-- Slot 1 -->
           <button type="button" class="slot-card">
             <div>
               <div class="slot-time mono">09.00 - 10.00</div>
@@ -104,7 +91,6 @@
             <span class="badge badge-success">✓ Tersedia · sisa 3</span>
           </button>
 
-          <!-- Slot 2 (Terpilih Default) -->
           <button type="button" class="slot-card is-selected">
             <div>
               <div class="slot-time mono">10.00 - 11.00</div>
@@ -119,7 +105,6 @@
             <span class="badge badge-selected">✓ Dipilih</span>
           </button>
 
-          <!-- Slot 3 (Penuh) -->
           <button type="button" class="slot-card is-full" disabled>
             <div>
               <div class="slot-time mono">11.00 - 12.00</div>
@@ -134,7 +119,6 @@
             <span class="badge badge-muted">✕ Penuh</span>
           </button>
 
-          <!-- Slot 4 -->
           <button type="button" class="slot-card">
             <div>
               <div class="slot-time mono">13.00 - 14.00</div>
@@ -152,7 +136,6 @@
       </section>
     </main>
 
-    <!-- ZONA 3: PANEL KANAN (RINGKASAN PILIHAN) -->
     <aside class="aside-panel" aria-label="Ringkasan Pilihan">
       <h2 class="section-title">Ringkasan Pilihan</h2>
 
@@ -178,17 +161,14 @@
         </div>
       </div>
 
-      <!-- Peringatan jika slot sama sudah dipesan -->
       <div id="bookingConstraintAlert" class="constraint-alert d-none" role="alert"></div>
 
-      <!-- Tombol CTA Konfirmasi Booking (Bootstrap Button) -->
       <button type="button" id="btnConfirmBooking" class="btn btn-primary btn-lg w-100">
         Konfirmasi Booking
       </button>
     </aside>
   </div>
 
-  <!-- ==================== MODAL KONFIRMASI GANTI JADWAL (RESCHEDULE) ==================== -->
   <div id="rescheduleModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="rescheduleModalTitle" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -207,7 +187,6 @@
     </div>
   </div>
 
-  <!-- Toast Umpan Balik Ringan -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="js/app.js"></script>
