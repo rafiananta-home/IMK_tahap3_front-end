@@ -90,8 +90,8 @@ function buatDataAwal() {
       },
       {
         id: "a3",
-        inisial: "RV",
-        nama: "Yahya Yasha",
+        inisial: "LE",
+        nama: "Lungga Elyas",
         nim: "24060124120001",
         jam: "13.00 - 14.00 WIB",
         tipe: "Cepat (KRS)",
