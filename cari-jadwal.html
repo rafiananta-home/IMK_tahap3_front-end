@@ -188,6 +188,25 @@
     </aside>
   </div>
 
+  <!-- ==================== MODAL KONFIRMASI GANTI JADWAL (RESCHEDULE) ==================== -->
+  <div id="rescheduleModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="rescheduleModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="rescheduleModalTitle" class="modal-title">Ganti Jadwal Bimbingan?</h2>
+        <button type="button" id="btnCloseRescheduleModal" class="modal-close" aria-label="Tutup dialog">✕</button>
+      </div>
+
+      <div id="rescheduleConsequence" class="modal-consequence">
+        Anda masih memiliki sesi aktif. Memesan jadwal baru akan otomatis menggantikan jadwal lama tersebut. Lanjutkan?
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btnCancelReschedule" class="btn btn-outline-secondary">Batal</button>
+        <button type="button" id="btnConfirmReschedule" class="btn btn-primary">Ya, Ganti Jadwal</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Umpan Balik Ringan -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

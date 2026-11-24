@@ -523,7 +523,139 @@ function initCariJadwal() {
     });
   }
 
-  // Event klik Tombol Konfirmasi Booking -> simpan ke localStorage lalu pindah ke tiket.html
+  // Elemen Modal Konfirmasi Ganti Jadwal (Reschedule)
+  var rescheduleModal = document.getElementById("rescheduleModal");
+  var rescheduleConsequence = document.getElementById("rescheduleConsequence");
+  var btnCloseReschedule = document.getElementById("btnCloseRescheduleModal");
+  var btnCancelReschedule = document.getElementById("btnCancelReschedule");
+  var btnConfirmReschedule = document.getElementById("btnConfirmReschedule");
+  var slotMenungguKonfirmasi = null;
+
+  function bukaModalReschedule(slotBaru) {
+    if (!rescheduleModal) return;
+    slotMenungguKonfirmasi = slotBaru;
+
+    var tiketLama = state.tiketAktif;
+    if (rescheduleConsequence && tiketLama) {
+      rescheduleConsequence.innerHTML =
+        "Anda masih memiliki sesi aktif pada <strong>" +
+        formatTanggal(tiketLama.tanggal, true) +
+        " (" +
+        tiketLama.jam +
+        " WIB)</strong>. Memesan jadwal baru pada <strong>" +
+        formatTanggal(slotBaru.tanggal, true) +
+        " (" +
+        slotBaru.jamMulai +
+        " - " +
+        slotBaru.jamSelesai +
+        " WIB)</strong> akan otomatis menggantikan jadwal lama tersebut. Lanjutkan?";
+    }
+
+    rescheduleModal.classList.add("is-open");
+    rescheduleModal.setAttribute("aria-hidden", "false");
+    if (btnCancelReschedule) btnCancelReschedule.focus();
+  }
+
+  function tutupModalReschedule() {
+    if (!rescheduleModal) return;
+    rescheduleModal.classList.remove("is-open");
+    rescheduleModal.setAttribute("aria-hidden", "true");
+    slotMenungguKonfirmasi = null;
+    if (btnKonfirmasi) btnKonfirmasi.focus();
+  }
+
+  function eksekusiBooking(slotTerpilih, isReschedule) {
+    // Efek loading singkat sebelum pindah halaman
+    if (btnKonfirmasi) {
+      btnKonfirmasi.classList.add("is-loading");
+      btnKonfirmasi.textContent = isReschedule ? "Mengganti Jadwal..." : "Memproses Booking...";
+    }
+
+    // Jika sebelumnya sudah ada tiket aktif, kembalikan kuota slot sebelumnya
+    if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
+      for (var oldS = 0; oldS < state.slots.length; oldS++) {
+        var oSlot = state.slots[oldS];
+        var oJam = oSlot.jamMulai + " - " + oSlot.jamSelesai;
+        if (oSlot.tanggal === state.tiketAktif.tanggal && (oJam === state.tiketAktif.jam || state.tiketAktif.jam.indexOf(oSlot.jamMulai) !== -1)) {
+          if (oSlot.terisi > 0) oSlot.terisi -= 1;
+          break;
+        }
+      }
+    }
+
+    // Tambah jumlah terisi pada slot baru
+    slotTerpilih.terisi += 1;
+
+    var kodeBaru = buatKodeTiket();
+    var jamBaru = slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai;
+    state.tiketAktif = {
+      kode: kodeBaru,
+      dosen: "Dr. Arif Wicaksono, M.Kom.",
+      ruang: "Ruang Dosen Gedung A.204",
+      tanggal: slotTerpilih.tanggal,
+      jam: jamBaru,
+      tipe: slotTerpilih.tipe,
+      status: "terkonfirmasi"
+    };
+
+    // Sinkronkan ke antrean agenda dosen sesuai tanggal yang dipilih mahasiswa
+    var agendaBaru = [];
+    for (var ag = 0; ag < state.agenda.length; ag++) {
+      // Hapus entri aktif lama milik Lungga Elyas agar berpindah ke hari baru yang dipesan
+      if (state.agenda[ag].nim === "24060124120001" && state.agenda[ag].status === "aktif") {
+        continue;
+      }
+      agendaBaru.push(state.agenda[ag]);
+    }
+    agendaBaru.push({
+      id: "a" + Date.now(),
+      tanggal: slotTerpilih.tanggal,
+      inisial: "LE",
+      nama: "Lungga Elyas",
+      nim: "24060124120001",
+      jam: jamBaru + " WIB",
+      tipe: slotTerpilih.tipe,
+      status: "aktif",
+      sorot: true
+    });
+    state.agenda = agendaBaru;
+
+    // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
+    state.notifikasi.unshift({
+      judul: (isReschedule ? "Jadwal diganti (" : "Reservasi berhasil (") + kodeBaru + ")",
+      isi: "Sesi " + slotTerpilih.tipe + " pada " + formatTanggal(slotTerpilih.tanggal, true) + " pukul " + jamBaru + " WIB telah terkonfirmasi.",
+      waktu: "Baru saja",
+      darurat: false
+    });
+
+    simpanState(state);
+
+    setTimeout(function () {
+      window.location.href = "tiket.html";
+    }, 450);
+  }
+
+  if (btnCloseReschedule) btnCloseReschedule.addEventListener("click", tutupModalReschedule);
+  if (btnCancelReschedule) btnCancelReschedule.addEventListener("click", tutupModalReschedule);
+  if (rescheduleModal) {
+    rescheduleModal.addEventListener("click", function (e) {
+      if (e.target === rescheduleModal) tutupModalReschedule();
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && rescheduleModal && rescheduleModal.classList.contains("is-open")) {
+      tutupModalReschedule();
+    }
+  });
+  if (btnConfirmReschedule) {
+    btnConfirmReschedule.addEventListener("click", function () {
+      var target = slotMenungguKonfirmasi;
+      tutupModalReschedule();
+      if (target) eksekusiBooking(target, true);
+    });
+  }
+
+  // Event klik Tombol Konfirmasi Booking -> jika masih ada tiket aktif, tampilkan pop-up konfirmasi dulu
   if (btnKonfirmasi) {
     btnKonfirmasi.addEventListener("click", function () {
       var slotTerpilih = null;
@@ -535,71 +667,13 @@ function initCariJadwal() {
       }
       if (!slotTerpilih || slotTerpilih.terisi >= slotTerpilih.kuota) return;
 
-      // Efek loading singkat sebelum pindah halaman
-      btnKonfirmasi.classList.add("is-loading");
-      btnKonfirmasi.textContent = "Memproses Booking...";
-
-      // Jika sebelumnya sudah ada tiket aktif, kembalikan kuota slot sebelumnya
+      // Jika masih ada tiket aktif, minta konfirmasi ganti jadwal (Reschedule)
       if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
-        for (var oldS = 0; oldS < state.slots.length; oldS++) {
-          var oSlot = state.slots[oldS];
-          var oJam = oSlot.jamMulai + " - " + oSlot.jamSelesai;
-          if (oSlot.tanggal === state.tiketAktif.tanggal && (oJam === state.tiketAktif.jam || state.tiketAktif.jam.indexOf(oSlot.jamMulai) !== -1)) {
-            if (oSlot.terisi > 0) oSlot.terisi -= 1;
-            break;
-          }
-        }
+        bukaModalReschedule(slotTerpilih);
+        return;
       }
 
-      // Tambah jumlah terisi pada slot
-      slotTerpilih.terisi += 1;
-
-      var kodeBaru = buatKodeTiket();
-      state.tiketAktif = {
-        kode: kodeBaru,
-        dosen: "Dr. Arif Wicaksono, M.Kom.",
-        ruang: "Ruang Dosen Gedung A.204",
-        tanggal: slotTerpilih.tanggal,
-        jam: slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai,
-        tipe: slotTerpilih.tipe,
-        status: "terkonfirmasi"
-      };
-
-      // Sinkronkan ke antrean agenda dosen sesuai tanggal yang dipilih mahasiswa
-      var agendaBaru = [];
-      for (var ag = 0; ag < state.agenda.length; ag++) {
-        // Hapus entri aktif lama milik Lungga Elyas agar berpindah ke hari baru yang dipesan
-        if (state.agenda[ag].nim === "24060124120001" && state.agenda[ag].status === "aktif") {
-          continue;
-        }
-        agendaBaru.push(state.agenda[ag]);
-      }
-      agendaBaru.push({
-        id: "a" + Date.now(),
-        tanggal: slotTerpilih.tanggal,
-        inisial: "LE",
-        nama: "Lungga Elyas",
-        nim: "24060124120001",
-        jam: slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB",
-        tipe: slotTerpilih.tipe,
-        status: "aktif",
-        sorot: true
-      });
-      state.agenda = agendaBaru;
-
-      // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
-      state.notifikasi.unshift({
-        judul: "Reservasi berhasil (" + kodeBaru + ")",
-        isi: "Sesi " + slotTerpilih.tipe + " pada " + formatTanggal(slotTerpilih.tanggal, true) + " pukul " + slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB telah terkonfirmasi.",
-        waktu: "Baru saja",
-        darurat: false
-      });
-
-      simpanState(state);
-
-      setTimeout(function () {
-        window.location.href = "tiket.html";
-      }, 450);
+      eksekusiBooking(slotTerpilih, false);
     });
   }
 
