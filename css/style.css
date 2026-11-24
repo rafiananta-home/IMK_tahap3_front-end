@@ -496,6 +496,24 @@ h3, .card-title {
   box-shadow: 0 4px 12px rgba(185, 28, 28, 0.28);
 }
 
+.btn-outline-danger {
+  --bs-btn-color: var(--color-status-danger);
+  --bs-btn-border-color: var(--color-status-danger-border);
+  --bs-btn-hover-bg: var(--color-status-danger-bg);
+  --bs-btn-hover-border-color: var(--color-status-danger);
+  --bs-btn-hover-color: var(--color-status-danger);
+  color: var(--color-status-danger);
+  border-color: var(--color-status-danger-border);
+  background-color: transparent;
+  transition: all var(--transition-fast);
+}
+
+.btn-outline-danger:hover:not(:disabled) {
+  background-color: var(--color-status-danger-bg);
+  border-color: var(--color-status-danger);
+  color: var(--color-status-danger);
+}
+
 .btn-icon-back {
   width: 40px;
   height: 40px;
@@ -1274,6 +1292,34 @@ button:disabled,
   font-size: 12px;
   font-weight: 700;
   color: var(--color-accent-selected);
+}
+
+.scheduled-card-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-delete-slot {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete-slot:hover {
+  background-color: var(--color-status-danger-bg);
+  border-color: var(--color-status-danger-border);
+  color: var(--color-status-danger);
 }
 
 /* --- LAYAR 5: AGENDA & MODE DARURAT DOSEN --- */

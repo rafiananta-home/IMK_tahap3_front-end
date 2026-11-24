@@ -448,6 +448,18 @@ function initCariJadwal() {
       btnKonfirmasi.classList.add("is-loading");
       btnKonfirmasi.textContent = "Memproses Booking...";
 
+      // Jika sebelumnya sudah ada tiket aktif, kembalikan kuota slot sebelumnya
+      if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
+        for (var oldS = 0; oldS < state.slots.length; oldS++) {
+          var oSlot = state.slots[oldS];
+          var oJam = oSlot.jamMulai + " - " + oSlot.jamSelesai;
+          if (oSlot.tanggal === state.tiketAktif.tanggal && (oJam === state.tiketAktif.jam || state.tiketAktif.jam.indexOf(oSlot.jamMulai) !== -1)) {
+            if (oSlot.terisi > 0) oSlot.terisi -= 1;
+            break;
+          }
+        }
+      }
+
       // Tambah jumlah terisi pada slot
       slotTerpilih.terisi += 1;
 
@@ -461,6 +473,31 @@ function initCariJadwal() {
         tipe: slotTerpilih.tipe,
         status: "terkonfirmasi"
       };
+
+      // Sinkronkan ke antrean agenda dosen
+      var adaDiAgenda = false;
+      for (var ag = 0; ag < state.agenda.length; ag++) {
+        if (state.agenda[ag].nim === "24060124120001") {
+          state.agenda[ag].jam = slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB";
+          state.agenda[ag].tipe = slotTerpilih.tipe;
+          state.agenda[ag].status = "aktif";
+          state.agenda[ag].sorot = true;
+          adaDiAgenda = true;
+          break;
+        }
+      }
+      if (!adaDiAgenda) {
+        state.agenda.push({
+          id: "a" + Date.now(),
+          inisial: "LE",
+          nama: "Lungga Elyas",
+          nim: "24060124120001",
+          jam: slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB",
+          tipe: slotTerpilih.tipe,
+          status: "aktif",
+          sorot: true
+        });
+      }
 
       // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
       state.notifikasi.unshift({
@@ -496,55 +533,150 @@ function initTiket() {
   var elTime = document.getElementById("receiptTime");
   var elStepper = document.getElementById("receiptStepper");
   var elNote = document.getElementById("receiptNote");
+  var btnOpenCancelModal = document.getElementById("btnOpenCancelModal");
+  var cancelModal = document.getElementById("cancelTicketModal");
+  var btnCloseCancelModal = document.getElementById("btnCloseCancelModal");
+  var btnDismissCancelModal = document.getElementById("btnDismissCancelModal");
+  var btnConfirmCancelTicket = document.getElementById("btnConfirmCancelTicket");
 
-  if (elCode) elCode.textContent = tiket.kode;
-  if (elType) {
-    elType.textContent = tiket.tipe;
-    elType.className = "badge " + (tiket.tipe.indexOf("Skripsi") !== -1 ? "badge-skripsi" : "badge-info");
-  }
-  if (elDate) elDate.textContent = formatTanggal(tiket.tanggal, true);
-  if (elTime) elTime.textContent = tiket.jam + " WIB";
+  function renderTiketView() {
+    var t = state.tiketAktif;
+    if (!t) return;
 
-  // Sesuaikan badge status, 3-Step Stepper, dan kotak catatan berdasarkan status tiket
-  if (tiket.status === "selesai") {
-    if (elStatus) {
-      elStatus.className = "badge badge-success";
-      elStatus.textContent = "✓ Selesai";
+    if (elCode) elCode.textContent = t.kode;
+    if (elType) {
+      elType.textContent = t.tipe;
+      elType.className = "badge " + (t.tipe.indexOf("Skripsi") !== -1 ? "badge-skripsi" : "badge-info");
     }
-    if (elStepper) {
-      elStepper.innerHTML =
-        '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Terkonfirmasi</div></div>' +
-        '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Pertemuan</div></div>' +
-        '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Selesai</div></div>';
-    }
-    if (elNote) {
-      elNote.innerHTML = "Sesi bimbingan dengan kode <span class='mono'>" + tiket.kode + "</span> telah diverifikasi selesai oleh Dr. Arif Wicaksono.";
-    }
-  } else if (tiket.status === "dibatalkan") {
-    if (elStatus) {
-      elStatus.className = "badge badge-danger";
-      elStatus.textContent = "✕ Dibatalkan Darurat";
-    }
-    if (elStepper) {
-      elStepper.innerHTML =
-        '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Terkonfirmasi</div></div>' +
-        '<div class="step-item"><div class="step-circle">✕</div><div class="step-label">Dibatalkan</div></div>' +
-        '<div class="step-item"><div class="step-circle">3</div><div class="step-label">Selesai</div></div>';
-    }
-    if (elNote) {
-      elNote.style.backgroundColor = "#FEF2F2";
-      elNote.style.borderColor = "#FCA5A5";
-      elNote.innerHTML = "Sesi dengan kode <span class='mono'>" + tiket.kode + "</span> dibatalkan oleh dosen karena halangan mendadak. Silakan pesan sesi baru.";
-    }
-  } else {
-    if (elStatus) {
-      elStatus.className = "badge badge-success";
-      elStatus.textContent = "✓ Terkonfirmasi";
-    }
-    if (elNote) {
-      elNote.innerHTML = "Tunjukkan kode <span class='mono'>" + tiket.kode + "</span> kepada Dr. Arif Wicaksono saat tiba di ruang bimbingan.";
+    if (elDate) elDate.textContent = formatTanggal(t.tanggal, true);
+    if (elTime) elTime.textContent = t.jam + " WIB";
+
+    // Sesuaikan badge status, 3-Step Stepper, tombol batal, dan catatan
+    if (t.status === "selesai") {
+      if (elStatus) {
+        elStatus.className = "badge badge-success";
+        elStatus.textContent = "✓ Selesai";
+      }
+      if (elStepper) {
+        elStepper.innerHTML =
+          '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Terkonfirmasi</div></div>' +
+          '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Pertemuan</div></div>' +
+          '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Selesai</div></div>';
+      }
+      if (elNote) {
+        elNote.style.backgroundColor = "";
+        elNote.style.borderColor = "";
+        elNote.innerHTML = "Sesi bimbingan dengan kode <span class='mono'>" + t.kode + "</span> telah diverifikasi selesai oleh Dr. Arif Wicaksono.";
+      }
+      if (btnOpenCancelModal) btnOpenCancelModal.style.display = "none";
+    } else if (t.status === "dibatalkan") {
+      if (elStatus) {
+        elStatus.className = "badge badge-danger";
+        elStatus.textContent = "✕ Dibatalkan";
+      }
+      if (elStepper) {
+        elStepper.innerHTML =
+          '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Terkonfirmasi</div></div>' +
+          '<div class="step-item"><div class="step-circle">✕</div><div class="step-label">Dibatalkan</div></div>' +
+          '<div class="step-item"><div class="step-circle">3</div><div class="step-label">Selesai</div></div>';
+      }
+      if (elNote) {
+        elNote.style.backgroundColor = "#FEF2F2";
+        elNote.style.borderColor = "#FCA5A5";
+        elNote.innerHTML = "Sesi dengan kode <span class='mono'>" + t.kode + "</span> telah dibatalkan. Kuota telah dikembalikan dan Anda dapat memesan jadwal lain.";
+      }
+      if (btnOpenCancelModal) btnOpenCancelModal.style.display = "none";
+    } else {
+      if (elStatus) {
+        elStatus.className = "badge badge-success";
+        elStatus.textContent = "✓ Terkonfirmasi";
+      }
+      if (elStepper) {
+        elStepper.innerHTML =
+          '<div class="step-item is-done"><div class="step-circle">✓</div><div class="step-label">Terkonfirmasi</div></div>' +
+          '<div class="step-item is-current"><div class="step-circle">2</div><div class="step-label">Pertemuan</div></div>' +
+          '<div class="step-item"><div class="step-circle">3</div><div class="step-label">Selesai</div></div>';
+      }
+      if (elNote) {
+        elNote.style.backgroundColor = "";
+        elNote.style.borderColor = "";
+        elNote.innerHTML = "Tunjukkan kode <span class='mono'>" + t.kode + "</span> kepada Dr. Arif Wicaksono saat tiba di ruang bimbingan.";
+      }
+      if (btnOpenCancelModal) btnOpenCancelModal.style.display = "inline-flex";
     }
   }
+
+  function bukaModalBatal() {
+    if (!cancelModal) return;
+    cancelModal.classList.add("is-open");
+    cancelModal.setAttribute("aria-hidden", "false");
+    if (btnDismissCancelModal) btnDismissCancelModal.focus();
+  }
+
+  function tutupModalBatal() {
+    if (!cancelModal) return;
+    cancelModal.classList.remove("is-open");
+    cancelModal.setAttribute("aria-hidden", "true");
+    if (btnOpenCancelModal) btnOpenCancelModal.focus();
+  }
+
+  if (btnOpenCancelModal) btnOpenCancelModal.addEventListener("click", bukaModalBatal);
+  if (btnCloseCancelModal) btnCloseCancelModal.addEventListener("click", tutupModalBatal);
+  if (btnDismissCancelModal) btnDismissCancelModal.addEventListener("click", tutupModalBatal);
+
+  if (cancelModal) {
+    cancelModal.addEventListener("click", function (e) {
+      if (e.target === cancelModal) tutupModalBatal();
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && cancelModal && cancelModal.classList.contains("is-open")) {
+      tutupModalBatal();
+    }
+  });
+
+  if (btnConfirmCancelTicket) {
+    btnConfirmCancelTicket.addEventListener("click", function () {
+      if (!state.tiketAktif) return;
+      var t = state.tiketAktif;
+      t.status = "dibatalkan";
+
+      // Kembalikan jumlah terisi pada slot terkait
+      for (var s = 0; s < state.slots.length; s++) {
+        var slot = state.slots[s];
+        var slotJam = slot.jamMulai + " - " + slot.jamSelesai;
+        if (slot.tanggal === t.tanggal && (slotJam === t.jam || t.jam.indexOf(slot.jamMulai) !== -1)) {
+          if (slot.terisi > 0) {
+            slot.terisi -= 1;
+          }
+          break;
+        }
+      }
+
+      // Sinkronisasi status di agenda dosen jika mahasiswa ini ada di agenda
+      for (var a = 0; a < state.agenda.length; a++) {
+        if (state.agenda[a].nim === "24060124120001" && state.agenda[a].status === "aktif") {
+          state.agenda[a].status = "dibatalkan";
+        }
+      }
+
+      // Tambahkan notifikasi pembatalan ke beranda
+      state.notifikasi.unshift({
+        judul: "Reservasi dibatalkan (" + t.kode + ")",
+        isi: "Anda telah membatalkan sesi konsultasi pada " + formatTanggal(t.tanggal, true) + " pukul " + t.jam + " WIB.",
+        waktu: "Baru saja",
+        darurat: false
+      });
+
+      simpanState(state);
+      tutupModalBatal();
+      renderTiketView();
+      tampilkanToast("Reservasi berhasil dibatalkan. Kuota slot telah dikembalikan.");
+    });
+  }
+
+  renderTiketView();
 }
 
 // ==========================================================================
@@ -598,16 +730,50 @@ function initAturJadwal() {
       var badgeLabel = isSkripsi ? "Skripsi" : "Cepat";
       var badgeClass = isSkripsi ? "badge-skripsi" : "badge-info";
 
+      var btnHapus = '<button type="button" class="btn-delete-slot" data-slot-id="' + s.id + '" title="Hapus slot" aria-label="Hapus slot ' + s.jamMulai + ' - ' + s.jamSelesai + '">✕</button>';
+
       html +=
         '<article class="scheduled-card">' +
         "  <div>" +
         '    <div class="scheduled-time mono">' + s.jamMulai + " - " + s.jamSelesai + "</div>" +
         '    <span class="badge ' + badgeClass + '">' + badgeLabel + "</span>" +
         "  </div>" +
-        '  <span class="scheduled-quota mono">terisi ' + s.terisi + "/" + s.kuota + "</span>" +
+        '  <div class="scheduled-card-right">' +
+        '    <span class="scheduled-quota mono">terisi ' + s.terisi + "/" + s.kuota + "</span>" +
+        "    " + btnHapus +
+        "  </div>" +
         "</article>";
     }
     list.innerHTML = html;
+
+    // Event hapus slot terjadwal
+    var deleteBtns = list.querySelectorAll(".btn-delete-slot");
+    for (var d = 0; d < deleteBtns.length; d++) {
+      deleteBtns[d].addEventListener("click", function () {
+        var idSlot = this.getAttribute("data-slot-id");
+        var targetSlot = null;
+        for (var k = 0; k < state.slots.length; k++) {
+          if (state.slots[k].id === idSlot) {
+            targetSlot = state.slots[k];
+            break;
+          }
+        }
+        if (!targetSlot) return;
+
+        if (targetSlot.terisi > 0) {
+          var yakin = confirm("Slot " + targetSlot.jamMulai + " - " + targetSlot.jamSelesai + " sudah memiliki " + targetSlot.terisi + " mahasiswa terdaftar. Yakin ingin menghapus slot ini?");
+          if (!yakin) return;
+        }
+
+        state.slots = state.slots.filter(function (item) {
+          return item.id !== idSlot;
+        });
+
+        simpanState(state);
+        renderSlotTerjadwal();
+        tampilkanToast("Slot " + targetSlot.jamMulai + " - " + targetSlot.jamSelesai + " berhasil dihapus.");
+      });
+    }
   }
 
   function tampilkanError(pesan) {
@@ -849,7 +1015,7 @@ function initAgenda() {
           if (state.agenda[idx].id === idTarget) {
             state.agenda[idx].status = "selesai";
 
-            // Sinkronisasi ke tiket mahasiswa Yahya jika sesi Yahya diselesaikan
+            // Sinkronisasi ke tiket mahasiswa jika sesi Lungga diselesaikan
             if (state.agenda[idx].nim === "24060124120001" && state.tiketAktif) {
               state.tiketAktif.status = "selesai";
               state.notifikasi.unshift({

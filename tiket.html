@@ -130,6 +130,9 @@
         <a href="cari-jadwal.html" class="btn btn-primary btn-lg">
           Pesan Sesi Baru
         </a>
+        <button type="button" id="btnOpenCancelModal" class="btn btn-outline-danger btn-lg">
+          Batalkan Reservasi
+        </button>
       </div>
     </main>
 
@@ -154,6 +157,26 @@
         </article>
       </div>
     </aside>
+  </div>
+
+  <!-- ==================== MODAL KONFIRMASI PEMBATALAN TIKET ==================== -->
+  <div id="cancelTicketModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="cancelModalTitle" class="modal-title">Batalkan Reservasi Bimbingan?</h2>
+        <button type="button" id="btnCloseCancelModal" class="modal-close" aria-label="Tutup dialog">✕</button>
+      </div>
+
+      <div class="modal-consequence">
+        Anda akan membatalkan sesi konsultasi ini. Slot waktu akan kembali terbuka untuk mahasiswa lain dan tiket bimbingan ini tidak dapat digunakan lagi.
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btnDismissCancelModal" class="btn btn-outline-secondary">Tetap Simpan</button>
+        <button type="button" id="btnConfirmCancelTicket" class="btn btn-danger">Ya, Batalkan Jadwal</button>
+      </div>
+    </div>
   </div>
 
   <!-- Toast Umpan Balik Ringan -->

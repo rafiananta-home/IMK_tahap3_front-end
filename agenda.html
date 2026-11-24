@@ -23,6 +23,7 @@
     <div class="topbar-inner">
       <a href="atur-jadwal.html" class="brand">
         <span class="brand-name">TemuDosen</span>
+        <span class="brand-badge">PROTOTIPE</span>
       </a>
 
       <!-- Pengalih Mode Demo antar Halaman Mahasiswa & Dosen -->
@@ -38,6 +39,16 @@
   <div class="app-layout">
     <!-- ZONA 1: SIDEBAR KIRI DOSEN -->
     <nav class="sidebar" aria-label="Menu Navigasi Dosen">
+      <!-- Kartu Profil Dosen -->
+      <div class="profile-card">
+        <div class="avatar" aria-hidden="true">AW</div>
+        <div>
+          <span class="caption d-block">Dosen Pembimbing (DPA)</span>
+          <div class="profile-name">Dr. Arif Wicaksono</div>
+          <span class="caption">NIP 198204152008121002</span>
+        </div>
+      </div>
+
       <ul class="nav-menu">
         <li>
           <a href="atur-jadwal.html" class="nav-item">
@@ -150,8 +161,8 @@
 
       <!-- Tombol Pemicu Mode Darurat -->
       <button type="button" id="btnOpenEmergencyModal" class="emergency-trigger">
-        <span class="emergency-knob" aria-hidden="true">&gt;&gt;</span>
-        <span class="emergency-trigger-text">Klik / Geser untuk Batalkan Sesi</span>
+        <span class="emergency-knob" aria-hidden="true">⚠️</span>
+        <span class="emergency-trigger-text">Batalkan Seluruh Sesi Hari Ini</span>
       </button>
 
       <p class="emergency-hint">Pengguna keyboard: fokus lalu tekan Enter</p>
