@@ -214,7 +214,8 @@ function renderBeranda(state) {
       if (tiket.status === "selesai") {
         badgeStatus = '<span class="badge badge-success">✓ Selesai</span>';
       } else if (tiket.status === "dibatalkan") {
-        badgeStatus = '<span class="badge badge-danger">✕ Dibatalkan Darurat</span>';
+        var labelBatal = tiket.darurat ? "✕ Dibatalkan Darurat" : "✕ Dibatalkan";
+        badgeStatus = '<span class="badge badge-danger">' + labelBatal + "</span>";
       }
 
       var badgeTipeClass = tiket.tipe.indexOf("Skripsi") !== -1 ? "badge-skripsi" : "badge-info";
@@ -641,6 +642,7 @@ function initTiket() {
       if (!state.tiketAktif) return;
       var t = state.tiketAktif;
       t.status = "dibatalkan";
+      t.darurat = false;
 
       // Kembalikan jumlah terisi pada slot terkait
       for (var s = 0; s < state.slots.length; s++) {
@@ -1088,6 +1090,7 @@ function initAgenda() {
       if (jumlahDibatalkan > 0) {
         if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
           state.tiketAktif.status = "dibatalkan";
+          state.tiketAktif.darurat = true;
         }
         state.notifikasi.unshift({
           judul: "Pembatalan Darurat oleh DPA",
