@@ -1415,11 +1415,6 @@ button:disabled,
   color: var(--color-status-danger);
 }
 
-.emergency-hint {
-  font-size: 11px;
-  color: var(--color-status-danger);
-}
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
