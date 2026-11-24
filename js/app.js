@@ -291,6 +291,11 @@ function initCariJadwal() {
       return s.tanggal === hariDipilih && s.tipe === tipeDipilih;
     });
 
+    // Urutkan slot dari jam paling pagi ke paling sore
+    daftarSlot.sort(function (a, b) {
+      return keMenit(a.jamMulai) - keMenit(b.jamMulai);
+    });
+
     // Cek apakah slot yang dipilih masih ada di daftar & tidak penuh
     var slotAktif = null;
     for (var i = 0; i < daftarSlot.length; i++) {
