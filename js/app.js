@@ -3,7 +3,7 @@
    Fungsi: Menyimpan data di localStorage & menyinkronkan 5 halaman HTML
    ========================================================================== */
 
-var STORAGE_KEY = "temudosen_demo_state_v2";
+var STORAGE_KEY = "temudosen_demo_state_v3";
 
 // Daftar hari untuk tampilan tanggal lengkap & singkat
 var DAFTAR_HARI = {
@@ -68,8 +68,10 @@ function buatDataAwal() {
       { id: "s14", tanggal: "2026-11-20", jamMulai: "09.00", jamSelesai: "10.00", tipe: "Lama (Skripsi)", terisi: 1, kuota: 3 }
     ],
     agenda: [
+      // Senin, 16 Nov 2026
       {
         id: "a1",
+        tanggal: "2026-11-16",
         inisial: "SN",
         nama: "Salsa Nadhifa",
         nim: "24060124130045",
@@ -80,6 +82,7 @@ function buatDataAwal() {
       },
       {
         id: "a2",
+        tanggal: "2026-11-16",
         inisial: "DP",
         nama: "Dimas Prakoso",
         nim: "24060124120019",
@@ -90,6 +93,7 @@ function buatDataAwal() {
       },
       {
         id: "a3",
+        tanggal: "2026-11-16",
         inisial: "LE",
         nama: "Lungga Elyas",
         nim: "24060124120001",
@@ -100,12 +104,98 @@ function buatDataAwal() {
       },
       {
         id: "a4",
+        tanggal: "2026-11-16",
         inisial: "NA",
         nama: "Nadia Ayuningtyas",
         nim: "23060123140082",
         jam: "14.00 - 15.00 WIB",
         tipe: "Lama (Skripsi)",
         status: "selesai",
+        sorot: false
+      },
+
+      // Selasa, 17 Nov 2026
+      {
+        id: "a5",
+        tanggal: "2026-11-17",
+        inisial: "RA",
+        nama: "Rafi Ananta",
+        nim: "24060124120014",
+        jam: "09.00 - 10.00 WIB",
+        tipe: "Cepat (KRS)",
+        status: "aktif",
+        sorot: false
+      },
+      {
+        id: "a6",
+        tanggal: "2026-11-17",
+        inisial: "AP",
+        nama: "Aulia Putri",
+        nim: "24060124130028",
+        jam: "10.00 - 11.00 WIB",
+        tipe: "Cepat (KRS)",
+        status: "aktif",
+        sorot: false
+      },
+      {
+        id: "a7",
+        tanggal: "2026-11-17",
+        inisial: "FM",
+        nama: "Fajar Mahendra",
+        nim: "23060123120051",
+        jam: "14.00 - 15.00 WIB",
+        tipe: "Lama (Skripsi)",
+        status: "aktif",
+        sorot: false
+      },
+
+      // Rabu, 18 Nov 2026
+      {
+        id: "a8",
+        tanggal: "2026-11-18",
+        inisial: "KT",
+        nama: "Keisha Tiara",
+        nim: "24060124140063",
+        jam: "09.00 - 10.00 WIB",
+        tipe: "Cepat (KRS)",
+        status: "aktif",
+        sorot: false
+      },
+
+      // Kamis, 19 Nov 2026
+      {
+        id: "a9",
+        tanggal: "2026-11-19",
+        inisial: "BG",
+        nama: "Bagas Pratama",
+        nim: "24060124120033",
+        jam: "10.00 - 11.00 WIB",
+        tipe: "Cepat (KRS)",
+        status: "aktif",
+        sorot: false
+      },
+      {
+        id: "a10",
+        tanggal: "2026-11-19",
+        inisial: "RS",
+        nama: "Rina Salsabila",
+        nim: "23060123130041",
+        jam: "14.00 - 15.00 WIB",
+        tipe: "Lama (Skripsi)",
+        status: "aktif",
+        sorot: false
+      },
+
+      // Jumat, 20 Nov 2026
+      {
+        id: "a11",
+        tanggal: "2026-11-20",
+        inisial: "DR",
+        nama: "Daffa Ramadhan",
+        nim: "24060124130077",
+        jam: "08.00 - 09.00 WIB",
+        tipe: "Cepat (KRS)",
+        status: "aktif",
         sorot: false
       }
     ]
@@ -475,30 +565,27 @@ function initCariJadwal() {
         status: "terkonfirmasi"
       };
 
-      // Sinkronkan ke antrean agenda dosen
-      var adaDiAgenda = false;
+      // Sinkronkan ke antrean agenda dosen sesuai tanggal yang dipilih mahasiswa
+      var agendaBaru = [];
       for (var ag = 0; ag < state.agenda.length; ag++) {
-        if (state.agenda[ag].nim === "24060124120001") {
-          state.agenda[ag].jam = slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB";
-          state.agenda[ag].tipe = slotTerpilih.tipe;
-          state.agenda[ag].status = "aktif";
-          state.agenda[ag].sorot = true;
-          adaDiAgenda = true;
-          break;
+        // Hapus entri aktif lama milik Lungga Elyas agar berpindah ke hari baru yang dipesan
+        if (state.agenda[ag].nim === "24060124120001" && state.agenda[ag].status === "aktif") {
+          continue;
         }
+        agendaBaru.push(state.agenda[ag]);
       }
-      if (!adaDiAgenda) {
-        state.agenda.push({
-          id: "a" + Date.now(),
-          inisial: "LE",
-          nama: "Lungga Elyas",
-          nim: "24060124120001",
-          jam: slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB",
-          tipe: slotTerpilih.tipe,
-          status: "aktif",
-          sorot: true
-        });
-      }
+      agendaBaru.push({
+        id: "a" + Date.now(),
+        tanggal: slotTerpilih.tanggal,
+        inisial: "LE",
+        nama: "Lungga Elyas",
+        nim: "24060124120001",
+        jam: slotTerpilih.jamMulai + " - " + slotTerpilih.jamSelesai + " WIB",
+        tipe: slotTerpilih.tipe,
+        status: "aktif",
+        sorot: true
+      });
+      state.agenda = agendaBaru;
 
       // Tambahkan notifikasi konfirmasi ke riwayat notifikasi Beranda
       state.notifikasi.unshift({
@@ -656,9 +743,13 @@ function initTiket() {
         }
       }
 
-      // Sinkronisasi status di agenda dosen jika mahasiswa ini ada di agenda
+      // Sinkronisasi status di agenda dosen jika mahasiswa ini ada di agenda pada tanggal tersebut
       for (var a = 0; a < state.agenda.length; a++) {
-        if (state.agenda[a].nim === "24060124120001" && state.agenda[a].status === "aktif") {
+        if (
+          state.agenda[a].nim === "24060124120001" &&
+          state.agenda[a].tanggal === t.tanggal &&
+          state.agenda[a].status === "aktif"
+        ) {
           state.agenda[a].status = "dibatalkan";
         }
       }
@@ -903,7 +994,9 @@ function initAturJadwal() {
 // ==========================================================================
 function initAgenda() {
   var state = ambilState();
+  var tanggalDipilih = "2026-11-16"; // Default Senin, 16 Nov 2026 (Hari Ini)
 
+  var tombolHari = document.querySelectorAll("#agendaDaySelector .day-chip");
   var modal = document.getElementById("emergencyModal");
   var btnOpenModal = document.getElementById("btnOpenEmergencyModal");
   var btnCloseModal = document.getElementById("btnCloseModal");
@@ -911,41 +1004,79 @@ function initAgenda() {
   var btnConfirmEmergency = document.getElementById("btnConfirmEmergency");
   var btnRestoreDemo = document.getElementById("btnRestoreDemo");
 
+  function ambilAgendaPerHari() {
+    var daftar = state.agenda.filter(function (item) {
+      return item.tanggal === tanggalDipilih;
+    });
+    // Urutkan antrean dari jam paling pagi ke paling sore
+    daftar.sort(function (a, b) {
+      var jamA = a.jam.split("-")[0].trim();
+      var jamB = b.jam.split("-")[0].trim();
+      return (keMenit(jamA) || 0) - (keMenit(jamB) || 0);
+    });
+    return daftar;
+  }
+
   function hitungSesiAktif() {
+    var daftar = ambilAgendaPerHari();
     var jumlah = 0;
-    for (var i = 0; i < state.agenda.length; i++) {
-      if (state.agenda[i].status === "aktif") jumlah += 1;
+    for (var i = 0; i < daftar.length; i++) {
+      if (daftar[i].status === "aktif") jumlah += 1;
     }
     return jumlah;
   }
 
   function renderAgenda() {
+    var titleEl = document.getElementById("agendaTitle");
+    var subtitleEl = document.getElementById("agendaDateSubtitle");
     var list = document.getElementById("agendaList");
     var countBadge = document.getElementById("agendaCountBadge");
     var emergencyDesc = document.getElementById("emergencyDesc");
+    var emergencyTriggerText = document.getElementById("emergencyTriggerText");
     var modalConsequence = document.getElementById("modalConsequence");
 
-    var totalSesi = state.agenda.length;
+    var daftarHari = ambilAgendaPerHari();
+    var totalSesi = daftarHari.length;
     var jumlahAktif = hitungSesiAktif();
+    var labelTanggalPanjang = formatTanggal(tanggalDipilih, false);
+    var labelTanggalSingkat = formatTanggal(tanggalDipilih, true);
 
+    if (titleEl) {
+      titleEl.textContent = tanggalDipilih === "2026-11-16"
+        ? "Agenda Bimbingan Hari Ini"
+        : "Agenda Bimbingan";
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = labelTanggalPanjang;
+    }
     if (countBadge) countBadge.textContent = totalSesi + " sesi";
+
+    if (emergencyTriggerText) {
+      emergencyTriggerText.textContent = tanggalDipilih === "2026-11-16"
+        ? "Batalkan Seluruh Sesi Hari Ini"
+        : "Batalkan Sesi " + labelTanggalSingkat.split(",")[0];
+    }
 
     if (emergencyDesc) {
       if (jumlahAktif > 0) {
         emergencyDesc.textContent =
           "Jika Anda berhalangan hadir mendadak, Anda dapat membatalkan seluruh " +
           jumlahAktif +
-          " sesi aktif hari ini sekaligus. Mahasiswa akan otomatis menerima notifikasi pembatalan.";
+          " sesi aktif pada " +
+          labelTanggalSingkat +
+          " sekaligus. Mahasiswa akan otomatis menerima notifikasi pembatalan.";
       } else {
         emergencyDesc.textContent =
-          "Tidak ada sesi aktif yang tersisa hari ini. Semua sesi sudah selesai atau dibatalkan.";
+          "Tidak ada sesi aktif yang tersisa pada " +
+          labelTanggalSingkat +
+          ". Semua sesi sudah selesai, dibatalkan, atau belum ada pendaftar.";
       }
     }
 
     if (modalConsequence) {
       modalConsequence.innerHTML =
-        "Anda akan membatalkan <strong>" + jumlahAktif + " sesi aktif</strong> hari ini (Senin, 16 November 2026). " +
-        "Seluruh mahasiswa terdampak akan menerima notifikasi pembatalan darurat secara otomatis.";
+        "Anda akan membatalkan <strong>" + jumlahAktif + " sesi aktif</strong> pada <strong>" + labelTanggalPanjang + "</strong>. " +
+        "Seluruh mahasiswa terdampak pada tanggal tersebut akan menerima notifikasi pembatalan darurat secara otomatis.";
     }
 
     if (btnOpenModal) {
@@ -953,7 +1084,7 @@ function initAgenda() {
     }
 
     if (btnRestoreDemo) {
-      if (jumlahAktif === 0) {
+      if (jumlahAktif === 0 && totalSesi > 0) {
         btnRestoreDemo.classList.remove("d-none");
       } else {
         btnRestoreDemo.classList.add("d-none");
@@ -962,9 +1093,17 @@ function initAgenda() {
 
     if (!list) return;
 
+    if (daftarHari.length === 0) {
+      list.innerHTML =
+        '<div class="empty-ticket-box">' +
+        "  <p>Belum ada mahasiswa yang membooking sesi bimbingan pada <strong>" + labelTanggalPanjang + "</strong>.</p>" +
+        "</div>";
+      return;
+    }
+
     var html = "";
-    for (var i = 0; i < state.agenda.length; i++) {
-      var item = state.agenda[i];
+    for (var i = 0; i < daftarHari.length; i++) {
+      var item = daftarHari[i];
       var kelasKartu = "agenda-card";
       var kelasAvatar = "avatar";
       var aksiHtml = "";
@@ -1015,14 +1154,30 @@ function initAgenda() {
         var idTarget = this.getAttribute("data-agenda-id");
         for (var idx = 0; idx < state.agenda.length; idx++) {
           if (state.agenda[idx].id === idTarget) {
-            state.agenda[idx].status = "selesai";
+            var targetItem = state.agenda[idx];
+            targetItem.status = "selesai";
 
-            // Sinkronisasi ke tiket mahasiswa jika sesi Lungga diselesaikan
-            if (state.agenda[idx].nim === "24060124120001" && state.tiketAktif) {
+            // Kembalikan 1 kuota pada slot jadwal yang sesuai agar kuota terbuka
+            var jamBersih = targetItem.jam.replace(" WIB", "").trim();
+            for (var s = 0; s < state.slots.length; s++) {
+              var sl = state.slots[s];
+              var slJam = sl.jamMulai + " - " + sl.jamSelesai;
+              if (sl.tanggal === targetItem.tanggal && slJam === jamBersih && sl.tipe === targetItem.tipe) {
+                if (sl.terisi > 0) sl.terisi -= 1;
+                break;
+              }
+            }
+
+            // Sinkronisasi ke tiket mahasiswa hanya jika tanggal tiketnya cocok
+            if (
+              targetItem.nim === "24060124120001" &&
+              state.tiketAktif &&
+              state.tiketAktif.tanggal === targetItem.tanggal
+            ) {
               state.tiketAktif.status = "selesai";
               state.notifikasi.unshift({
                 judul: "Sesi bimbingan selesai",
-                isi: "Dr. Arif Wicaksono telah menandai sesi bimbingan Anda selesai.",
+                isi: "Dr. Arif Wicaksono telah menandai sesi bimbingan Anda pada " + formatTanggal(targetItem.tanggal, true) + " selesai.",
                 waktu: "Baru saja",
                 darurat: false
               });
@@ -1030,12 +1185,24 @@ function initAgenda() {
 
             simpanState(state);
             renderAgenda();
-            tampilkanToast("Sesi " + state.agenda[idx].nama + " ditandai selesai.");
+            tampilkanToast("Sesi " + targetItem.nama + " ditandai selesai.");
             break;
           }
         }
       });
     }
+  }
+
+  // Event klik pilihan hari di Agenda Dosen
+  for (var h = 0; h < tombolHari.length; h++) {
+    tombolHari[h].addEventListener("click", function () {
+      for (var j = 0; j < tombolHari.length; j++) {
+        tombolHari[j].classList.remove("is-active");
+      }
+      this.classList.add("is-active");
+      tanggalDipilih = this.getAttribute("data-day");
+      renderAgenda();
+    });
   }
 
   function bukaModal() {
@@ -1076,34 +1243,40 @@ function initAgenda() {
     }
   });
 
-  // Konfirmasi pembatalan darurat semua sesi aktif
+  // Konfirmasi pembatalan darurat hanya untuk sesi aktif pada tanggal yang dipilih
   if (btnConfirmEmergency) {
     btnConfirmEmergency.addEventListener("click", function () {
       var jumlahDibatalkan = 0;
       for (var i = 0; i < state.agenda.length; i++) {
-        if (state.agenda[i].status === "aktif") {
-          state.agenda[i].status = "dibatalkan";
+        var sesi = state.agenda[i];
+        if (sesi.tanggal === tanggalDipilih && sesi.status === "aktif") {
+          sesi.status = "dibatalkan";
           jumlahDibatalkan += 1;
         }
       }
 
       if (jumlahDibatalkan > 0) {
-        if (state.tiketAktif && state.tiketAktif.status === "terkonfirmasi") {
+        // Hanya batalkan tiket mahasiswa jika tanggal tiketnya sama dengan tanggal darurat
+        if (
+          state.tiketAktif &&
+          state.tiketAktif.status === "terkonfirmasi" &&
+          state.tiketAktif.tanggal === tanggalDipilih
+        ) {
           state.tiketAktif.status = "dibatalkan";
           state.tiketAktif.darurat = true;
+          state.notifikasi.unshift({
+            judul: "Pembatalan Darurat oleh DPA",
+            isi: "Dr. Arif Wicaksono membatalkan seluruh sesi aktif pada " + formatTanggal(tanggalDipilih, true) + " karena berhalangan hadir mendadak. Silakan pilih jadwal lain.",
+            waktu: "Baru saja",
+            darurat: true
+          });
         }
-        state.notifikasi.unshift({
-          judul: "Pembatalan Darurat oleh DPA",
-          isi: "Dr. Arif Wicaksono membatalkan seluruh sesi aktif hari ini (Senin, 16 Nov 2026) karena berhalangan hadir mendadak. Silakan pilih jadwal lain.",
-          waktu: "Baru saja",
-          darurat: true
-        });
         simpanState(state);
       }
 
       tutupModal();
       renderAgenda();
-      tampilkanToast(jumlahDibatalkan + " sesi aktif dibatalkan & notifikasi dikirim ke mahasiswa.");
+      tampilkanToast(jumlahDibatalkan + " sesi aktif pada " + formatTanggal(tanggalDipilih, true) + " dibatalkan.");
     });
   }
 

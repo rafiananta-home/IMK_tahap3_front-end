@@ -1323,6 +1323,10 @@ button:disabled,
 }
 
 /* --- LAYAR 5: AGENDA & MODE DARURAT DOSEN --- */
+.day-selector-wrap.day-selector-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .agenda-list {
   display: flex;
   flex-direction: column;
@@ -1647,6 +1651,10 @@ button:disabled,
 
   .day-selector-wrap {
     grid-template-columns: repeat(7, 84px);
+  }
+
+  .day-selector-wrap.day-selector-5 {
+    grid-template-columns: repeat(5, 84px);
   }
 
   .form-row-2col {

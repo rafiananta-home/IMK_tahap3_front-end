@@ -68,10 +68,19 @@
     <main class="main-content">
       <div class="page-header-row">
         <div>
-          <h1 class="page-title">Agenda Bimbingan Hari Ini</h1>
-          <p class="page-subtitle">Senin, 16 November 2026</p>
+          <h1 id="agendaTitle" class="page-title">Agenda Bimbingan Hari Ini</h1>
+          <p id="agendaDateSubtitle" class="page-subtitle">Senin, 16 November 2026</p>
         </div>
         <span id="agendaCountBadge" class="badge badge-mint">4 sesi</span>
+      </div>
+
+      <!-- Pilihan Hari Agenda Bimbingan (Senin - Jumat) -->
+      <div id="agendaDaySelector" class="day-selector-wrap day-selector-5" role="tablist" aria-label="Pilih Hari Agenda Bimbingan">
+        <button type="button" class="day-chip is-active" data-day="2026-11-16">Sen · 16 Nov</button>
+        <button type="button" class="day-chip" data-day="2026-11-17">Sel · 17 Nov</button>
+        <button type="button" class="day-chip" data-day="2026-11-18">Rab · 18 Nov</button>
+        <button type="button" class="day-chip" data-day="2026-11-19">Kam · 19 Nov</button>
+        <button type="button" class="day-chip" data-day="2026-11-20">Jum · 20 Nov</button>
       </div>
 
       <!-- Daftar Kartu Antrean Mahasiswa -->
@@ -161,8 +170,8 @@
 
       <!-- Tombol Pemicu Mode Darurat -->
       <button type="button" id="btnOpenEmergencyModal" class="emergency-trigger">
-        <span class="emergency-knob" aria-hidden="true">⚠️</span>
-        <span class="emergency-trigger-text">Batalkan Seluruh Sesi Hari Ini</span>
+        <span class="emergency-knob" aria-hidden="true">✕</span>
+        <span id="emergencyTriggerText" class="emergency-trigger-text">Batalkan Seluruh Sesi Hari Ini</span>
       </button>
 
       <p class="emergency-hint">Pengguna keyboard: fokus lalu tekan Enter</p>
