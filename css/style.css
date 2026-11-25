@@ -1,3 +1,4 @@
+/* Warna, Font & Spasi */
 :root {
   --color-bg-canvas: #F4FBFC;
   --color-bg-surface: #FFFFFF;
@@ -153,6 +154,7 @@ h3,
   color: var(--color-text-muted);
 }
 
+/* Layout Utama & Sidebar */
 .topbar {
   position: sticky;
   top: 0;
@@ -387,6 +389,7 @@ h3,
   line-height: 1.45;
 }
 
+/* Tombol, Badge & Komponen Umum */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -667,6 +670,7 @@ button:disabled,
   gap: 14px;
 }
 
+/* Halaman Beranda (index.html) */
 .hero-box {
   background-color: var(--color-highlight-mint);
   border: 1px solid #99F6E4;
@@ -799,6 +803,7 @@ button:disabled,
   line-height: 1.45;
 }
 
+/* Halaman Cari Jadwal (cari-jadwal.html) */
 .day-selector-wrap {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -939,6 +944,7 @@ button:disabled,
   line-height: 1.45;
 }
 
+/* Halaman Tiket (tiket.html) */
 .receipt-card {
   border: 2px solid var(--color-action-primary);
   border-radius: var(--radius-lg);
@@ -1114,6 +1120,7 @@ button:disabled,
   flex-wrap: wrap;
 }
 
+/* Halaman Atur Jadwal Dosen (atur-jadwal.html) */
 .form-card {
   border: 1.5px solid #99F6E4;
   border-radius: var(--radius-lg);
@@ -1303,6 +1310,7 @@ button:disabled,
   color: var(--color-status-danger);
 }
 
+/* Halaman Agenda & Mode Darurat Dosen (agenda.html) */
 .day-selector-wrap.day-selector-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
@@ -1415,6 +1423,7 @@ button:disabled,
   color: var(--color-status-danger);
 }
 
+/* Modal & Toast */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1547,6 +1556,7 @@ button:disabled,
   font-size: 11px;
 }
 
+/* Responsif Tablet & HP */
 @media (max-width: 1080px) {
   .app-layout {
     grid-template-columns: 220px minmax(0, 1fr);

@@ -1,3 +1,4 @@
+// Data awal & localStorage
 var STORAGE_KEY = "temudosen_demo_state_v3";
 
 var DAFTAR_HARI = {
@@ -247,6 +248,7 @@ function keMenit(teksJam) {
   return jam * 60 + menit;
 }
 
+// Halaman Beranda (index.html)
 function initBeranda() {
   var state = ambilState();
   renderBeranda(state);
@@ -324,6 +326,7 @@ function renderBeranda(state) {
   }
 }
 
+// Halaman Cari Jadwal (cari-jadwal.html)
 function initCariJadwal() {
   var state = ambilState();
   var hariDipilih = "2026-11-17";
@@ -629,6 +632,7 @@ function initCariJadwal() {
   renderSlotDanRingkasan();
 }
 
+// Halaman Tiket (tiket.html)
 function initTiket() {
   var state = ambilState();
   var tiket = state.tiketAktif;
@@ -788,6 +792,7 @@ function initTiket() {
   renderTiketView();
 }
 
+// Halaman Atur Jadwal Dosen (atur-jadwal.html)
 function initAturJadwal() {
   var state = ambilState();
   var kuota = 3;
@@ -994,6 +999,7 @@ function initAturJadwal() {
   renderSlotTerjadwal();
 }
 
+// Halaman Agenda Dosen (agenda.html)
 function initAgenda() {
   var state = ambilState();
   var tanggalDipilih = "2026-11-16";
@@ -1284,6 +1290,7 @@ function initAgenda() {
   renderAgenda();
 }
 
+// Inisialisasi halaman
 document.addEventListener("DOMContentLoaded", function () {
   var halaman = document.body.getAttribute("data-page");
 
